@@ -2,11 +2,20 @@ syntax on
 set background=dark
 colo solarized
 let mapleader="\<space>"
+" alwasy show statusline
+set ls=2
+" custom statusline
+set stl=%<%F%h%m%r%h%w%y\ %{&ff}\
+set stl+=%{strftime(\"%d/%m/%Y\ %H:%M\")}%=\
+set stl+=lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
+hi StatusLine ctermbg=NONE ctermfg=darkgrey
 set enc=utf-8
 " tweake vimrc
 command! Vimrc :vs $MYVIMRC
 " rerender at the end of the macro
 set lz
+" use host clipboard additionally
+set clipboard=unnamed,unnamedplus
 " display line numbers
 set nu
 " toggle display line number
@@ -53,7 +62,7 @@ nmap <leader>w :w!<cr>
 " auto write file
 nmap <leader>a :set aw!<cr>
 " format paragraph
-nmap <leader>v gqip
+nmap <leader>v mzgqip`z
 " make all horizontal splits open below the current one
 set sb
 " make all vertical splits open on right the current one
@@ -67,11 +76,9 @@ set spl=en,ru
 " spell checking
 nmap <silent> <leader>s :set spell!<cr>
 " insert datestamp
-nnoremap <F1> "=strftime("%d/%m/%Y %a")<cr>PgUU
-" copy to host clipboard
-noremap <F5> "+y
+nnoremap <F2> "=strftime("%d/%m/%Y %a")<cr>PgUU
 " execute sql with https://github.com/yegorchi/vim-sql
-map <F8> :call Psql()<cr><cr>
+nnoremap <F8> :call Psql()<cr><cr>
 " keep cursor more in middle when scrolling down / up
 :nnoremap <leader>zz :let &scrolloff=999-&scrolloff<cr>
 " keep the cursor in place while joining lines
@@ -98,8 +105,8 @@ nnoremap <Right> :vertical resize +10<cr>
 nnoremap <Up> :resize -10<cr>
 nnoremap <Down> :resize +10<cr>
 
-autocmd BufWinLeave *.* mkview
-autocmd BufWinEnter *.* silent loadview
+au BufWinLeave *.* mkview
+au BufWinEnter *.* silent loadview
 " turn off relativenumber only for insert mode
 augroup every
   autocmd!
@@ -110,11 +117,3 @@ if $TERM_PROGRAM =~ "iTerm"
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
-
-" alwasy show statusline
-set ls=2
-" custom statusline
-set stl=%<%F%h%m%r%h%w%y\ %{&ff}\
-set stl+=%{strftime(\"%d/%m/%Y\ %H:%M\")}%=\
-set stl+=lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
-hi StatusLine ctermbg=NONE ctermfg=darkgrey
