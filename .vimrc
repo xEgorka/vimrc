@@ -2,7 +2,7 @@ syntax on
 set background=dark
 colo solarized
 let mapleader="\<space>"
-" alwasy show statusline
+" always show statusline
 set ls=2
 " custom statusline
 set stl=%<%F%h%m%r%h%w%y\ %{&ff}\
@@ -10,7 +10,7 @@ set stl+=%{strftime(\"%d/%m/%Y\ %H:%M\")}%=\
 set stl+=lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
 hi StatusLine ctermbg=NONE ctermfg=darkgrey
 set enc=utf-8
-" tweake vimrc
+" tweak vimrc
 command! Vimrc :vs $MYVIMRC
 " rerender at the end of the macro
 set lz
@@ -18,6 +18,7 @@ set lz
 set clipboard=unnamed,unnamedplus
 " display line numbers
 set nu
+set rnu
 " toggle display line number
 nmap <silent> <leader>n :set nu!<cr>
 " toggle between absolute -> relative line number
@@ -44,6 +45,7 @@ set ts=4 sts=4 sw=4 expandtab
 set hid
 " show the line and column number of the cursor position
 set ru
+" allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 " name of a keyboard mapping
 set kmp=russian-jcukenwin
@@ -71,16 +73,20 @@ set fo+=t
 set lcs=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 " toggle visibility of listchars
 nmap <silent> <leader>l :set list!<cr>
-" list of spellcheking languages
+" list of spellchecking languages
 set spl=en,ru
 " spell checking
 nmap <silent> <leader>s :set spell!<cr>
+" change red highlighting to underline
+hi clear SpellBad
+hi SpellBad cterm=underline
 " insert datestamp
 nnoremap <F2> "=strftime("%d/%m/%Y %a")<cr>PgUU
 " execute sql with https://github.com/yegorchi/vim-sql
 nnoremap <F8> :call Psql()<cr><cr>
 " keep cursor more in middle when scrolling down / up
-:nnoremap <leader>zz :let &scrolloff=999-&scrolloff<cr>
+let &scrolloff=999
+nnoremap <leader>zz :let &scrolloff=999-&scrolloff<cr>
 " keep the cursor in place while joining lines
 nnoremap J mzJ`z
 " Y behave like D
@@ -100,10 +106,10 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 " arrow keys resize windows
-nnoremap <Left> :vertical resize -10<cr>
-nnoremap <Right> :vertical resize +10<cr>
-nnoremap <Up> :resize -10<cr>
-nnoremap <Down> :resize +10<cr>
+nnoremap <left> :vertical resize -10<cr>
+nnoremap <right> :vertical resize +10<cr>
+nnoremap <up> :resize -10<cr>
+nnoremap <down> :resize +10<cr>
 
 au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
