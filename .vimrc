@@ -12,6 +12,10 @@ hi StatusLine ctermbg=NONE ctermfg=darkgrey
 set enc=utf-8
 " tweak vimrc
 command! Vimrc :vs $MYVIMRC
+" sets how many lines of history to remember
+set history=500
+" turn on the Wild menu
+set wmnu
 " rerender at the end of the macro
 set lz
 " use host clipboard additionally
@@ -113,12 +117,6 @@ nnoremap <down> :resize +10<cr>
 
 au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
-" turn off relativenumber only for insert mode
-augroup every
-  autocmd!
-  au InsertEnter * set norelativenumber
-  au InsertLeave * set relativenumber
-augroup END
 if $TERM_PROGRAM =~ "iTerm"
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
