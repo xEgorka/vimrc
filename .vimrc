@@ -1,123 +1,123 @@
 syntax on
-set background=dark
+se background=dark
 colo solarized
 let mapleader="\<space>"
 " always show statusline
-set ls=2
+se ls=2
 " custom statusline
-set stl=%<%F%h%m%r%h%w%y\ %{&ff}\
-set stl+=%{strftime(\"%d/%m/%Y\ %H:%M\")}%=\
-set stl+=lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
+se stl=%<%F%h%m%r%h%w%y\ %{&ff}\
+se stl+=%{strftime(\"%d/%m/%Y\ %H:%M\")}%=\
+se stl+=lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
 hi StatusLine ctermbg=NONE ctermfg=darkgrey
-set enc=utf-8
+se enc=utf-8
 " tweak vimrc
-command! Vimrc :vs $MYVIMRC
-" sets how many lines of history to remember
-set history=500
+com! Vimrc :vs $MYVIMRC
+" ses how many lines of history to remember
+se history=500
 " turn on the Wild menu
-set wmnu
+se wmnu
 " rerender at the end of the macro
-set lz
+se lz
 " use host clipboard additionally
-set clipboard=unnamed,unnamedplus
+se clipboard=unnamed,unnamedplus
 " display line numbers
-set nu
-set rnu
+se nu
+se rnu
 " toggle display line number
-nmap <silent> <leader>n :set nu!<cr>
+nm <silent> <leader>n :se nu!<cr>
 " toggle between absolute -> relative line number
-nnoremap <c-n> :let [&nu, &rnu] = [&nu, &nu+&rnu==1]<cr>
+nn <c-n> :let [&nu, &rnu] = [&nu, &nu+&rnu==1]<cr>
 " load without creating a swapfile
-set noswapfile
+se noswapfile
 " highlight search results
-set hls
+se hls
 " no highlight search results
-nnoremap <silent> <leader>r :noh<return>
+nn <silent> <leader>r :noh<return>
 " ignore case in a pattern
-set ignorecase
+se ignorecase
 " unless the pattern contains at least one uppercase
-set scs
-" show where the pattern, as it was typed
-set is
+se scs
+" show where the pattern as it was typed
+se is
 " show (partial) command in the last line of the screen
-set sc
+se sc
 " copy indent from current line when starting a new line
-set ai
-" use 4 spaces instead of tab (to replace existing tab use :retab)
-set ts=4 sts=4 sw=4 expandtab
-" doesn't prompt a warning when opening a file and the current file was modified but not saved
-set hid
+se ai
+" use 4 spaces instead of tab
+se ts=4 sts=4 sw=4 et
+" no prompt a warning when leaving modified not saved file
+se hid
 " show the line and column number of the cursor position
-set ru
+se ru
 " allow backspacing over everything in insert mode
-set backspace=indent,eol,start
+se backspace=indent,eol,start
 " name of a keyboard mapping
-set kmp=russian-jcukenwin
+se kmp=russian-jcukenwin
 " switch between keymaps
-inoremap <c-l> <c-^>
-set iminsert=0
-set imsearch=0
-" instead of stumbling into ex mode, repeat the last macro used
-nnoremap Q @@
+ino <c-l> <c-^>
+se imi=0
+se ims=0
+" repeat the last macro used instead of stumbling into :ex
+nn Q @@
 " wrap/unwrap
-nmap <silent> <leader>f :set wrap!<cr>
-" comment Python line
-nmap <silent> <leader>c 0i#<esc>
+nm <silent> <leader>f :se wrap!<cr>
+" comment line with #
+nm <silent> <leader>c 0i#<esc>
 " write file
-nmap <leader>w :w!<cr>
-" auto write file
-nmap <leader>a :set aw!<cr>
+nm <leader>w :w!<cr>
+" write file auto
+nm <leader>a :se aw!<cr>
 " format paragraph
-nmap <leader>v mzgqip`z
-" make all horizontal splits open below the current one
-set sb
-" make all vertical splits open on right the current one
-set spr
-set fo+=t
-set lcs=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
+nm <leader>v mzgqip`z
+" open new window below using :sp
+se sb
+" open new window to the right using :vsp
+se spr
+se fo+=t
+se lcs=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
 " toggle visibility of listchars
-nmap <silent> <leader>l :set list!<cr>
+nm <silent> <leader>l :se list!<cr>
 " list of spellchecking languages
-set spl=en,ru
-" spell checking
-nmap <silent> <leader>s :set spell!<cr>
+se spl=en,ru
+" switch over spell checking
+nm <silent> <leader>s :se spell!<cr>
 " change red highlighting to underline
 hi clear SpellBad
 hi SpellBad cterm=underline
 " insert datestamp
-nnoremap <F2> "=strftime("%d/%m/%Y %a")<cr>PgUU
+nn <F2> "=strftime("%d/%m/%Y %a")<cr>PgUU
 " execute sql with https://github.com/yegorchi/vim-sql
-nnoremap <F8> :call Psql()<cr><cr>
-" keep cursor more in middle when scrolling down / up
+nn <leader>g :call Psql()<cr><cr>
+" keep cursor in the middle while scrolling down/up
 let &scrolloff=999
-nnoremap <leader>zz :let &scrolloff=999-&scrolloff<cr>
+nn <leader>zz :let &scrolloff=999-&scrolloff<cr>
 " keep the cursor in place while joining lines
-nnoremap J mzJ`z
+nn J mzJ`z
 " Y behave like D
-nnoremap Y y$
+nn Y y$
 " run the current line as if it were a command
-nnoremap <leader>e :exe getline(line('.'))<cr>
+nn <leader>e :exe getline(line('.'))<cr>
 " strip trailing whitespaces
-function DeleteTrailingWS() abort
-    normal mz
+fu DeleteTrailingWS() abort
+    norm mz
     %s/\v\s+$//ge
-    normal `z
-endfunc
-nnoremap <silent> <leader>ds :call DeleteTrailingWS()<cr>
+    norm `z
+endf
+nn <silent> <leader>ds :call DeleteTrailingWS()<cr>
 " control window with control
 map <c-h> <c-w>h
 map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 " arrow keys resize windows
-nnoremap <left> :vertical resize -10<cr>
-nnoremap <right> :vertical resize +10<cr>
-nnoremap <up> :resize -10<cr>
-nnoremap <down> :resize +10<cr>
+nn <left> :vert res -10<cr>
+nn <right> :vert res +10<cr>
+nn <up> :res -10<cr>
+nn <down> :res +10<cr>
 
 au BufWinLeave *.* mkview
 au BufWinEnter *.* silent loadview
 if $TERM_PROGRAM =~ "iTerm"
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
+en
