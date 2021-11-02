@@ -2,6 +2,8 @@ syntax on
 se background=dark
 colo solarized
 let mapleader="\<space>"
+" exit from insert mode
+im ii <Esc>
 " always show statusline
 se ls=2
 " custom statusline
