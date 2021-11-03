@@ -14,7 +14,7 @@ hi StatusLine ctermbg=NONE ctermfg=darkgrey
 se enc=utf-8
 " tweak vimrc
 com! Vimrc :vs $MYVIMRC
-" ses how many lines of history to remember
+" set number of history lines to remember
 se history=500
 " turn on the Wild menu
 se wmnu
@@ -41,7 +41,7 @@ se ignorecase
 se scs
 " show where the pattern as it was typed
 se is
-" show (partial) command in the last line of the screen
+" show command in the last line of the screen
 se sc
 " copy indent from current line when starting a new line
 se ai
@@ -86,8 +86,8 @@ nm <silent> <leader>s :se spell!<cr>
 " change red highlighting to underline
 hi clear SpellBad
 hi SpellBad cterm=underline
-" insert datestamp
-nn <F2> "=strftime("%d/%m/%Y %a")<cr>PgUU
+" insert date and day of week
+nn <leader>t "=strftime("%d/%m/%Y %a")<cr>PgUU
 " execute sql with https://github.com/yegorchi/vim-sql
 nn <leader>g :call Psql()<cr><cr>
 " keep cursor in the middle while scrolling down/up
@@ -106,7 +106,7 @@ fu DeleteTrailingWS() abort
     norm `z
 endf
 nn <silent> <leader>ds :call DeleteTrailingWS()<cr>
-" control window with control
+" move around windows using control+hjkl
 map <c-h> <c-w>h
 map <c-j> <c-w>j
 map <c-k> <c-w>k
