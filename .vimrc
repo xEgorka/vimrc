@@ -1,125 +1,128 @@
-syntax on
+" enable syntax highlighting
+sy on
+" switch appearance mode
 se background=dark
+" choose color scheme
 colo solarized
-let mapleader="\<space>"
-" exit from insert mode
-im ii <Esc>
-" always show statusline
+" use space as leader
+let mapleader=" "
+" write buffer
+nm <leader>w :w<cr>
+" write buffer if modified then hide
+nn <silent> <leader><leader> :x<cr>
+" leave insert mode
+im ii <esc>
+" edit .vimrc
+nn <silent> <leader>v :vs ~/.vimrc<cr>
+" autoreload upon save
+au bufwritepost .vimrc so %
+" show statusline
 se ls=2
-" custom statusline
-se stl=%<%F%h%m%r%h%w%y\ %{&ff}\
-se stl+=%{strftime(\"%d/%m/%Y\ %H:%M\")}%=\
-se stl+=lin:%l\,%L\ col:%c%V\ pos:%o\ ascii:%b\ %P
-hi StatusLine ctermbg=NONE ctermfg=darkgrey
+" configure statusline
+se stl=%<%F%h%m%r%h%w%y\ %{&ff}\ %{strftime(\"%d/%m/%Y\ %H:%M\")}%=
+se stl+=column=%c%V\ line=%l\ lines:%L\ %P
+hi statusline ctermbg=none ctermfg=darkgrey
+" set the character encoding
 se enc=utf-8
-" tweak vimrc
-com! Vimrc :vs $MYVIMRC
-" set number of history lines to remember
-se history=500
-" turn on the Wild menu
+" make and load views
+au bufwinleave *.* mkvie
+au bufwinenter *.* silent lo
+" strip trailing whitespaces
+au filetype sql,python,yaml au bufwritepre <buffer> %s/\s\+$//e
+" set number of command-lines to remember
+se history=555
+" turn on wild menu
 se wmnu
-" rerender at the end of the macro
+" redraw at the end of the macro
 se lz
-" use host clipboard additionally
+" extra use host clipboard
 se clipboard=unnamed,unnamedplus
-" display line numbers
+" run the current line as if it were a command
+nn <silent> <leader>e :exe getline(line('.'))<cr>
+" keep cursor in the middle while scrolling
+let &so=777
+nn <silent> <leader>z :let &so=777+7-&so<cr>
+" show line numbers
 se nu
+" display the line numbers relatively
 se rnu
-" toggle display line number
+" toggle visibility of line numbers
 nm <silent> <leader>n :se nu!<cr>
-" toggle between absolute -> relative line number
+" toggle between absolute and relative line numbers
 nn <c-n> :let [&nu, &rnu] = [&nu, &nu+&rnu==1]<cr>
-" load without creating a swapfile
+" load without swapfile
 se noswapfile
 " highlight search results
 se hls
 " no highlight search results
-nn <silent> <leader>r :noh<return>
-" ignore case in a pattern
+nn <silent> <leader>r :noh<cr>
+" ignore case in search pattern unless it contains uppercase
 se ignorecase
-" unless the pattern contains at least one uppercase
 se scs
 " show where the pattern as it was typed
 se is
 " show command in the last line of the screen
 se sc
-" copy indent from current line when starting a new line
+" keep indentation when starting a new line
 se ai
 " use 4 spaces instead of tab
 se ts=4 sts=4 sw=4 et
-" no prompt a warning when leaving modified not saved file
+" no prompt warning when leaving modified but not saved buffer
 se hid
-" show the line and column number of the cursor position
-se ru
 " allow backspacing over everything in insert mode
 se backspace=indent,eol,start
-" name of a keyboard mapping
+" set up keyboard mapping
 se kmp=russian-jcukenwin
 " switch between keymaps
 ino <c-l> <c-^>
 se imi=0
 se ims=0
-" repeat the last macro used instead of stumbling into :ex
+" repeat the macro
 nn Q @@
-" wrap/unwrap
+" set strings to use in list mode
+se lcs=space:·,tab:>·,trail:~,eol:¬
+" enable automatic text wrapping
+se fo+=t
+" wrap or unwrap
 nm <silent> <leader>f :se wrap!<cr>
 " comment line with #
 nm <silent> <leader>c 0i#<esc>
-" write file
-nm <leader>w :w!<cr>
-" write file auto
-nm <leader>a :se aw!<cr>
+" insert date and day of week
+nn <silent> <leader>d "=strftime("%d/%m/%Y %a")<cr>PgUU
 " format paragraph
-nm <leader>v mzgqip`z
-" open new window below using :sp
-se sb
-" open new window to the right using :vsp
-se spr
-se fo+=t
-se lcs=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:·
-" toggle visibility of listchars
+nm <leader>b mzgqip`z
+" toggle visibility of list strings
 nm <silent> <leader>l :se list!<cr>
-" list of spellchecking languages
+" enable spellchecking for listed languages
 se spl=en,ru
 " switch over spell checking
 nm <silent> <leader>s :se spell!<cr>
-" change red highlighting to underline
-hi clear SpellBad
-hi SpellBad cterm=underline
-" insert date and day of week
-nn <leader>t "=strftime("%d/%m/%Y %a")<cr>PgUU
-" execute sql with https://github.com/yegorchi/vim-sql
-nn <leader>g :call Psql()<cr><cr>
-" keep cursor in the middle while scrolling down/up
-let &scrolloff=999
-nn <leader>zz :let &scrolloff=999-&scrolloff<cr>
+" underline bad words
+hi spellbad cterm=underline
 " keep the cursor in place while joining lines
 nn J mzJ`z
 " Y behave like D
 nn Y y$
-" run the current line as if it were a command
-nn <leader>e :exe getline(line('.'))<cr>
-" strip trailing whitespaces
-fu DeleteTrailingWS() abort
-    norm mz
-    %s/\v\s+$//ge
-    norm `z
-endf
-nn <silent> <leader>ds :call DeleteTrailingWS()<cr>
-" move around windows using control+hjkl
+" open new window below using :sp
+se sb
+" open new window to the right using :vs
+se spr
+" move around windows using control+hjklx
 map <c-h> <c-w>h
 map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
-" arrow keys resize windows
-nn <left> :vert res -10<cr>
-nn <right> :vert res +10<cr>
-nn <up> :res -10<cr>
-nn <down> :res +10<cr>
-
-au BufWinLeave *.* mkview
-au BufWinEnter *.* silent loadview
-if $TERM_PROGRAM =~ "iTerm"
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-en
+map <c-x> <c-w>x
+" resize window
+nn <silent> <leader>k :res -7<cr>
+nn <silent> <leader>j :res +7<cr>
+" open sql toolkit
+nn <leader>q :vs ~/.db/.sql<cr>
+" issue a query to the database
+nn <leader>g :cal Sql()<cr><cr>
+fu Sql()
+  let fr=search(';$','bnW')+1|let to=search(';$','cnW')
+  let f='~/.db/'.strftime('%Y%m%d%H%M%S').'.sql'
+  let c=':'.fr.','.to.'w !psql '.$CONNINFO.'&>'.f|exe c
+  exe 'ped '.f.'|winc j|res 21|se nowrap|winc k'
+endf
