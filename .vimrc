@@ -56,7 +56,7 @@ se noswapfile
 se hls
 " no highlight search results
 nn <silent> <leader>r :noh<cr>
-" ignore case in search pattern unless it contains uppercase
+" ignore case in search unless pattern contains upper
 se ignorecase
 se scs
 " show where the pattern as it was typed
@@ -67,7 +67,7 @@ se sc
 se ai
 " use 4 spaces instead of tab
 se ts=4 sts=4 sw=4 et
-" no prompt warning when leaving modified but not saved buffer
+" no prompt warning when leaving modified buffer
 se hid
 " allow backspacing over everything in insert mode
 se backspace=indent,eol,start
@@ -113,9 +113,9 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-x> <c-w>x
-" resize window
-nn <silent> <leader>k :res -7<cr>
-nn <silent> <leader>j :res +7<cr>
+" resize the window
+nn <silent> <leader>k :res -8<cr>
+nn <silent> <leader>j :res +8<cr>
 " open sql toolkit
 nn <leader>q :vs ~/.db/.sql<cr>
 " issue a query to the database
@@ -124,5 +124,5 @@ fu Sql()
   let fr=search(';$','bnW')+1|let to=search(';$','cnW')
   let f='~/.db/'.strftime('%Y%m%d%H%M%S').'.sql'
   let c=':'.fr.','.to.'w !psql '.$CONNINFO.'&>'.f|exe c
-  exe 'ped '.f.'|winc j|res 21|se nowrap|winc k'
+  exe 'ped '.f.'|winc j|res 16|se nowrap|winc k'
 endf
