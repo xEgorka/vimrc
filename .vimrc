@@ -12,6 +12,7 @@ nm <leader>w :w<cr>
 nn <silent> <leader><leader> :x<cr>
 " leave insert mode
 im ii <esc>
+nm ii <nop>
 " edit .vimrc
 nn <silent> <leader>v :vs ~/.vimrc<cr>
 " autoreload upon save
@@ -19,8 +20,7 @@ au bufwritepost .vimrc so %
 " show statusline
 se ls=2
 " configure statusline
-se stl=%<%F%h%m%r%h%w%y\ %{&ff}\ %{strftime(\"%d/%m/%Y\ %H:%M\")}%=
-se stl+=column=%c%V\ line=%l\ lines:%L\ %P
+se stl=%F\ %m%r%h%w%q%k%=%c\ %L
 hi statusline ctermbg=none ctermfg=darkgrey
 " set the character encoding
 se enc=utf-8
