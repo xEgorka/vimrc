@@ -1,26 +1,26 @@
-" enable syntax highlighting
-sy on
 " switch appearance mode
 se background=dark
 " choose color scheme
 colo solarized
+" enable syntax highlighting
+sy on
 " use space as leader
 let mapleader=" "
-" write buffer
-nm <leader>w :w<cr>
+" write current file
+nn <leader>w :w<cr>
 " write buffer if modified then hide
-nn <silent> <leader><leader> :x<cr>
+nn <leader><leader> :x<cr>
 " leave insert mode
-im ii <esc>
-nm ii <nop>
+nn ii <nop>
+ino ii <esc>
 " edit .vimrc
-nn <silent> <leader>v :vs ~/.vimrc<cr>
-" autoreload upon save
+nn vi :vs ~/.vimrc<cr>
+" autoreload .vimrc upon save
 au bufwritepost .vimrc so %
 " show statusline
 se ls=2
 " configure statusline
-se stl=%F\ %m%r%h%w%q%k%=%c\ %L
+se stl=%F\ %m%r%h%w%q%k%=%v\ %L
 hi statusline ctermbg=none ctermfg=darkgrey
 " set the character encoding
 se enc=utf-8
@@ -36,26 +36,24 @@ se wmnu
 " redraw at the end of the macro
 se lz
 " extra use host clipboard
-se clipboard=unnamed,unnamedplus
+se clipboard=unnamed
 " run the current line as if it were a command
 nn <silent> <leader>e :exe getline(line('.'))<cr>
 " keep cursor in the middle while scrolling
 let &so=777
-nn <silent> <leader>z :let &so=777+7-&so<cr>
+nn <silent> <leader>zz :let &so=777+7-&so<cr><bar>:norm zz<cr>
 " show line numbers
 se nu
 " display the line numbers relatively
 se rnu
-" toggle visibility of line numbers
-nm <silent> <leader>n :se nu!<cr>
 " toggle between absolute and relative line numbers
-nn <c-n> :let [&nu, &rnu] = [&nu, &nu+&rnu==1]<cr>
+nn <silent> <c-n> :let [&nu,&rnu]=[&nu,&nu+&rnu==1]<cr>
 " load without swapfile
 se noswapfile
 " highlight search results
 se hls
 " no highlight search results
-nn <silent> <leader>r :noh<cr>
+nn <leader>r :noh<cr>
 " ignore case in search unless pattern contains upper
 se ignorecase
 se scs
@@ -73,54 +71,56 @@ se hid
 se backspace=indent,eol,start
 " set up keyboard mapping
 se kmp=russian-jcukenwin
+" break undo sequence by words
+ino <space> <C-G>u<space>
 " switch between keymaps
 ino <c-l> <c-^>
 se imi=0
 se ims=0
 " repeat the macro
 nn Q @@
-" set strings to use in list mode
+" define strings to use in list mode
 se lcs=space:·,tab:>·,trail:~,eol:¬
 " enable automatic text wrapping
 se fo+=t
-" wrap or unwrap
-nm <silent> <leader>f :se wrap!<cr>
-" comment line with #
-nm <silent> <leader>c 0i#<esc>
-" insert date and day of week
-nn <silent> <leader>d "=strftime("%d/%m/%Y %a")<cr>PgUU
+" toggle wrap
+nn ff :se wrap!<cr>
+" comment current line with #
+nn <leader>c 0i# <esc>
+" insert date and day of the week
+ino <c-d> <c-r>=toupper(strftime("%d/%m/%Y %a"))<cr>
 " format paragraph
-nm <leader>b mzgqip`z
+nn <leader>v mzgqip`z
 " toggle visibility of list strings
-nm <silent> <leader>l :se list!<cr>
+nn <leader>l :se list!<cr>
 " enable spellchecking for listed languages
 se spl=en,ru
 " switch over spell checking
-nm <silent> <leader>s :se spell!<cr>
+nn <leader>s :se spell!<cr>
 " underline bad words
 hi spellbad cterm=underline
-" keep the cursor in place while joining lines
+" keep cursor in place while joining lines
 nn J mzJ`z
-" Y behave like D
+" yank till the end of the line
 nn Y y$
 " open new window below using :sp
 se sb
 " open new window to the right using :vs
 se spr
 " move around windows using control+hjklx
-map <c-h> <c-w>h
-map <c-j> <c-w>j
-map <c-k> <c-w>k
-map <c-l> <c-w>l
-map <c-x> <c-w>x
+nn <c-h> <c-w>h
+nn <c-j> <c-w>j
+nn <c-k> <c-w>k
+nn <c-l> <c-w>l
+nn <c-x> <c-w>x
 " resize the window
-nn <silent> <leader>k :res -8<cr>
-nn <silent> <leader>j :res +8<cr>
-" open sql toolkit
-nn <leader>q :vs ~/.db/.sql<cr>
-" issue a query to the database
-nn <leader>g :cal Sql()<cr><cr>
-fu Sql()
+nn <leader>k :res -16<cr>
+nn <leader>j :res +16<cr>
+" open a database toolkit
+nn <leader>db :vs ~/.db/.sql<cr>
+" issue a query to the db
+nn <leader>q :cal Q()<cr><cr>
+fu! Q()
   let fr=search(';$','bnW')+1|let to=search(';$','cnW')
   let f='~/.db/'.strftime('%Y%m%d%H%M%S').'.sql'
   let c=':'.fr.','.to.'w !psql '.$CONNINFO.'&>'.f|exe c
