@@ -60,11 +60,11 @@ se kmp=russian-jcukenwin imi=0 ims=0
 " toggle keymaps and unmap jk for ru
 ino <c-l> <c-r>=L()<cr>
 fu L()
-  if &imi==0|cal feedkeys("\<c-^>")|exe 'iu jk' 
+  if &imi==0|cal feedkeys("\<c-^>")|exe 'try|iu jk|cat|endt' 
   el|cal feedkeys("\<c-^>")|exe 'ino jk <esc>'|en|retu ''
 endf
 " break undo sequence by hitting space
-ino <space> <C-G>u<space>
+ino <space> <c-g>u<space>
 " repeat the macro
 nn Q @@
 " define strings to use in list mode
