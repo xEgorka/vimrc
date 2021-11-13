@@ -11,7 +11,7 @@ nn <leader><leader> :x<cr>
 " leave insert mode
 ino jk <esc>
 " edit .vimrc and autoreload it upon save
-nn vi :vs ~/.vimrc<cr>|au bufwritepost .vimrc so %
+nn vim :vs ~/.vimrc<cr>|au bufwritepost .vimrc so %
 " show and configure statusline
 se ls=2 stl=%F\ %m%r%h%w%q%k%=%v\ %L
 hi statusline ctermbg=none ctermfg=darkgrey
@@ -19,8 +19,8 @@ hi statusline ctermbg=none ctermfg=darkgrey
 se enc=utf-8
 " make and load views
 au bufwinleave *.* mkvie|au bufwinenter *.* silent lo
-" strip trailing whitespaces automatically
-au filetype sql,python,yaml au bufwritepre <buffer> %s/\s\+$//e
+" strip trailing whitespaces
+au bufwritepre *.py,*.sql,*.yaml %s/\s\+$//e
 " set number of command-lines to remember
 se history=555
 " turn on wild menu
@@ -102,6 +102,6 @@ fu Q()
   exe 'ped '.f.'|winc j|res 16|se nowrap|winc k'
 endf
 " resize current window height
-nn <leader>k :res -16<cr>|nn <leader>j :res +16<cr>
-" hide neighbor window
+nn <leader>j :res -16<cr>|nn <leader>k :res +16<cr>
+" hide adjacent window
 nm <leader>h <c-w>w<leader><leader>
