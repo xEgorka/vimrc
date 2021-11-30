@@ -1,7 +1,7 @@
 " switch appearance mode
 se background=dark
-" choose color scheme and highlight syntax
-colo solarized|sy on
+" highlight syntax and choose color scheme
+sy on|colo gruvbox
 " use space as leader
 let mapleader=" "
 " write current file
@@ -21,26 +21,27 @@ se enc=utf-8
 se updatetime=50
 " highlight lenght limit
 se colorcolumn=80
-" strip trailing whitespaces
-au bufwritepre *.py,*.sql,*.yaml %s/\s\+$//e
 " set number of command-lines to remember
 se history=555
 " turn on wild menu
 se wmnu
 " redraw at the end of the macro
 se lz
-" map yanks to host clipboard
+" yank to host clipboard
 nn <leader>y "+y|vn <leader>y "+y|nn <leader>Y mzgg"+yG`z
-" keep unnamed register content while paste or delete
-vn <leader>p "_dP|nn <leader>d "_d|vn <leader>d "_d
+" no change unnamed register
+vn <leader>p "_dp
+nn <leader>d "_d|vn <leader>d "_d|nm <leader>D <leader>d$
 " yank till the end of the line
 nn Y y$
 " run the current line as if it were a command
 nn <silent> <leader>e :exe getline(line('.'))<cr>
 " get help for the word under cursor
-nn <leader>ghw :h <c-r>=expand("<cword>")<cr><cr>
+nn <leader>gh :h <c-r>=expand("<cword>")<cr><cr>
 " keep cursor in the middle while scrolling
 let &so=777|nn <leader>zz :let &so=777+7-&so<cr><bar>:norm zz<cr>
+" keep cursor centered
+nn n nzzzv|nn N Nzzzv|nn J mzJ`z
 " show line numbers and display relatively
 se nu rnu
 " toggle between absolute and relative line numbers
@@ -66,7 +67,7 @@ se kmp=russian-jcukenwin imi=0 ims=0
 " toggle keymaps and unmap jk for ru
 ino <c-l> <c-r>=L()<cr>
 fu L()
-  if &imi==0|cal feedkeys("\<c-^>")|exe 'try|iu jk|cat|endt' 
+  if &imi==0|cal feedkeys("\<c-^>")|exe 'try|iu jk|cat|endt'
   el|cal feedkeys("\<c-^>")|exe 'ino jk <esc>'|en|retu ''
 endf
 " break undo sequence
@@ -93,12 +94,6 @@ nn <leader>v mzgqip`z
 nn <leader>l :se list!<cr>
 " enable spellchecking and selector
 se spl=en,ru|nn <leader>s :se spell!<cr>
-" underline bad words
-hi spellbad cterm=underline
-" keep it centered 
-nn n nzzzv|nn N Nzzzv|nn J mzJ`z
-" open new windows below and to the right
-se sb spr
 " move around windows using control+hjkl
 nn <c-h> <c-w>h|nn <c-j> <c-w>j|nn <c-k> <c-w>k|nn <c-l> <c-w>l
 " open a database toolkit and issue a query to the db
@@ -113,10 +108,9 @@ endf
 nn <leader>- :res -8<cr>|nn <leader>+ :res +8<cr>
 " hide adjacent window
 nm <leader>h <c-w>w<leader><leader>
+" open explorer
+nn <leader>f :wincmd v<bar> :Ex <bar> :vert res 30<cr>
 " move selected rows
 vn J :m '>+1<cr>gv=gv|vn K :m '<-2<cr>gv=gv
 ino <c-j> <esc>:m .+1<cr>==|ino <c-k> <esc>:m .-2<cr>==
 nn <leader>j <esc>:m .+1<cr>==|nn <leader>k <esc>:m .-2<cr>==
-" mutate jumplist
-nn <expr> k (v:count > 5 ? "m'" . v:count : "") . 'k'
-nn <expr> j (v:count > 5 ? "m'" . v:count : "") . 'j'
