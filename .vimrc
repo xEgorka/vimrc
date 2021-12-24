@@ -1,7 +1,5 @@
-" switch appearance mode
-se background=dark
 " highlight syntax and choose color scheme
-sy on|colo gruvbox
+sy on|se background=dark|colo solarized
 " use space as leader
 let mapleader=" "
 " write current file
@@ -17,9 +15,11 @@ se ls=2 stl=%F\ %m%r%h%w%q%k%=%v\ %L
 hi statusline ctermbg=none ctermfg=darkgrey
 " set the character encoding
 se enc=utf-8
+" cwd is one containing the file which was opened 
+se acd
 " minimize update time for best experience
 se updatetime=50
-" highlight lenght limit
+" highlight line lenght limit
 se colorcolumn=80
 " set number of command-lines to remember
 se history=555
@@ -37,7 +37,7 @@ nn Y y$
 " run the current line as if it were a command
 nn <silent> <leader>e :exe getline(line('.'))<cr>
 " get help for the word under cursor
-nn <leader>gh :h <c-r>=expand("<cword>")<cr><cr>
+nn <leader>i :h <c-r>=expand("<cword>")<cr><cr>
 " keep cursor in the middle while scrolling
 let &so=777|nn <leader>zz :let &so=777+7-&so<cr><bar>:norm zz<cr>
 " keep cursor centered
@@ -64,6 +64,8 @@ se hid
 se backspace=indent,eol,start
 " use RU keys mapping and switch to EN by default
 se kmp=russian-jcukenwin imi=0 ims=0
+" toggle between the current and the alternate file 
+nn <leader>g <c-^>
 " toggle keymaps and unmap jk for ru
 ino <c-l> <c-r>=L()<cr>
 fu L()
@@ -80,10 +82,8 @@ nn <silent> Q <nop>
 se lcs=space:·,tab:>·,trail:~,eol:¬
 " enable automatic text wrapping
 se fo+=t
-" no wrap
+" no wrap lines
 se nowrap
-" toggle wrap
-nn ff :se wrap!<cr>
 " comment current line with #
 nn <leader>c 0i# <esc>
 " insert date and day of the week
@@ -102,14 +102,16 @@ fu Q()
   let fr=search(';$','bnW')+1|let to=search(';$','cnW')
   let f='~/.db/'.strftime('%Y%m%d%H%M%S').'.sql'
   let c=':'.fr.','.to.'w !psql '.$CONNINFO.'&>'.f|exe c
-  exe 'ped '.f.'|winc j|res 16|se nowrap|winc k'
+  se sb|exe 'ped '.f.'|winc j|res 16|se nowrap|winc k'
 endf
 " resize current window height
 nn <leader>- :res -8<cr>|nn <leader>+ :res +8<cr>
 " hide adjacent window
 nm <leader>h <c-w>w<leader><leader>
 " open explorer
-nn <leader>f :wincmd v<bar> :Ex <bar> :vert res 30<cr>
+nn <leader>f :wincmd v<bar> :Ex<cr>
+" indent and keep selected area
+vn < <gv|vn > >gv
 " move selected rows
 vn J :m '>+1<cr>gv=gv|vn K :m '<-2<cr>gv=gv
 ino <c-j> <esc>:m .+1<cr>==|ino <c-k> <esc>:m .-2<cr>==
