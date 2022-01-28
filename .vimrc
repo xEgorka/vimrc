@@ -1,7 +1,9 @@
 " use space as leader
 let mapleader=" "
-" remove banner from netrw
-let g:netrw_banner=0
+" remove banner and return to previous file
+let g:netrw_banner=0|let g:netrw_altfile=1
+" display line numbers
+let g:netrw_bufsettings='noma nomod nu nobl nowrap ro'
 " highlight syntax and choose color scheme
 sy on|se background=dark|colo solarized
 " show and configure statusline
@@ -9,8 +11,11 @@ se ls=2 stl=%F\ %m%r%h%w%q%k%=%v\ %L
 hi statusline ctermbg=none ctermfg=darkgrey
 " underline bad words
 hi spellbad cterm=underline
-" automatically read file which changed outside
-se ar
+" make and load views
+au bufwinleave *.* mkvie
+au bufwinenter *.* silent lo
+" use persistent undo
+se undodir=$HOME/.vim/undodir undofile
 " no info on startup
 se shm+=I
 " no delay after esc
@@ -19,8 +24,6 @@ se to tm=1010 ttm=10
 se enc=utf-8
 " cwd is one containing the file which was opened
 se acd
-" minimize update time
-se updatetime=55
 " highlight line lenght limit
 se colorcolumn=80
 " show line numbers and display relatively
@@ -29,8 +32,6 @@ se nu rnu
 se history=555
 " turn on wild menu
 se wmnu
-" redraw at the end of the macro
-se lz
 " load without swapfile
 se noswapfile
 " show where the pattern as it was typed
@@ -53,7 +54,7 @@ se lcs=space:·,tab:>·,trail:~,eol:¬
 se fo+=t
 " no wrap lines
 se nowrap
-" enable spellchecking
+" select spellchecking languages
 se spl=en,ru
 " set height for a preview window
 se pvh=16
@@ -126,3 +127,8 @@ if exists('$TMUX')
   let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
   let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
 en
+" plug plug
+cal plug#begin('$HOME/.vim/plugged')
+  Plug 'vim-airline/vim-airline'
+  Plug 'tpope/vim-fugitive'
+cal plug#end()
