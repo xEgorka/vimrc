@@ -1,134 +1,111 @@
-" use space as leader
-let mapleader=" "
-" remove banner and return to previous file
-let g:netrw_banner=0|let g:netrw_altfile=1
-" display line numbers
+set autochdir
+set autoindent
+set backspace=indent,eol,start
+set colorcolumn=80
+set expandtab
+set formatoptions+=t
+set hidden
+set history=10000
+set iminsert=0
+set imsearch=0
+set incsearch
+set keymap=russian-jcukenwin
+set laststatus=2
+set listchars=space:·,tab:>·,trail:~,eol:¬
+set noswapfile
+set nowrap
+set number
+set previewheight=16
+set relativenumber
+set shiftwidth=4
+set shortmess+=I
+set showcmd
+set softtabstop=4
+set spelllang=en,ru
+set statusline=%F\ %m%r%h%w%q%k%=%v\ %L
+set tabstop=4
+set timeout
+set timeoutlen=1000
+set ttimeoutlen=10
+set undodir=$HOME/.vim/undodir
+set undofile
+set wildmenu
+
+let &scrolloff=777
+let g:mapleader="\<space>"
+let g:netrw_altfile=1
+let g:netrw_banner=0
 let g:netrw_bufsettings='noma nomod nu nobl nowrap ro'
-" highlight syntax and choose color scheme
-sy on|se background=dark|colo solarized
-" show and configure statusline
-se ls=2 stl=%F\ %m%r%h%w%q%k%=%v\ %L
-hi statusline ctermbg=none ctermfg=darkgrey
-" underline bad words
-hi spellbad cterm=underline
-" make and load views
-au bufwinleave *.* mkvie
-au bufwinenter *.* silent lo
-" use persistent undo
-se undodir=$HOME/.vim/undodir undofile
-" no info on startup
-se shm+=I
-" no delay after esc
-se to tm=1010 ttm=10
-" set the character encoding
-se enc=utf-8
-" cwd is one containing the file which was opened
-se acd
-" highlight line lenght limit
-se colorcolumn=80
-" show line numbers and display relatively
-se nu rnu
-" set number of command-lines to remember
-se history=555
-" turn on wild menu
-se wmnu
-" load without swapfile
-se noswapfile
-" show where the pattern as it was typed
-se is
-" show command in the last line of the screen
-se sc
-" keep indentation when starting a new line
-se ai
-" use 4 spaces instead of tab
-se ts=4 sts=4 sw=4 et
-" no prompt warning when leaving modified buffer
-se hid
-" allow backspacing over everything in insert mode
-se backspace=indent,eol,start
-" use RU keys mapping and switch to EN by default
-se kmp=russian-jcukenwin imi=0 ims=0
-" define strings to use in list mode
-se lcs=space:·,tab:>·,trail:~,eol:¬
-" enable automatic text wrapping
-se fo+=t
-" no wrap lines
-se nowrap
-" select spellchecking languages
-se spl=en,ru
-" set height for a preview window
-se pvh=16
-" write current file
-nn <leader>w :w<cr>
-" write buffer if modified then hide
-nn <leader><leader> :x<cr>
-" reload .vimrc
-nn <leader><cr> :so ~/.vimrc<cr>
-" yank to host clipboard
-nn <leader>y "+y|vn <leader>y "+y
-" no change unnamed register
-vn <leader>p "_dp|vn <leader>d "_d
-nn <leader>d "_d|nm <leader>D <leader>d$
-" yank till the end of the line
-nn Y y$|nm <leader>Y <leader>y$
-" run the current line as if it were a command
-nn <silent> <leader>e :exe getline(line('.'))<cr>
-" get help for the word under cursor
-nn <leader>i :h <c-r>=expand("<cword>")<cr><cr>
-" keep cursor in the middle while scrolling
-let &so=777|nn <leader>zz :let &so=777+7-&so<cr><bar>:norm zz<cr>
-" keep cursor centered
-nn n nzzzv|nn N Nzzzv|nn J mzJ`z
-" toggle between absolute and relative line numbers
-nn <silent> <c-n> :let [&nu,&rnu]=[&nu,&nu+&rnu==1]<cr>
-" leave insert mode
-ino <c-c> <esc>
-" break undo sequence
-ino <space> <c-g>u<space>|ino ) <c-g>u)|ino ( <c-g>u(
-ino , <c-g>u,|ino . <c-g>u.|ino ! <c-g>u!|ino ? <c-g>u?
-ino <cr> <c-g>u<cr>
-" insert date and day of the week
-ino <c-g> <c-r>=toupper(strftime("%d/%m/%Y %a"))<cr>
-" delete character after cursor
-ino <c-d> <del>
-" disable :ex
-nn <silent> Q <nop>
-" comment line with #
-nn <leader>c 0i# <esc>
-" format paragraph
-nn <leader>v mzgqip`z
-" go to left or right buffer split
-nn <c-h> <c-w>h|nn <c-l> <c-w>l
-" go to previous or next buffer
-nn <c-j> :bp<cr>|nn <c-k> :bn<cr>
-" browse files
-nn <c-f> :Ex<cr>
-" toggle alternate file
-nn <c-g> <c-^>
-" indent and keep selected area
-vn < <gv|vn > >gv
-" move visual selected lines
-vn J :m '>+1<cr>gv=gv|vn K :m '<-2<cr>gv=gv
-" strip trailing whitespaces
-nn <leader>n :%s/\s\+$//e<cr>
-" issue a sql query
-nn <leader>qq :cal Q()<cr><cr>
-fu Q()
-  let f=search(';$','bnW')+1|let t=search(';$','cnW')
-  let r=$TMP.'/'.strftime('%Y%m%d%H%M%S')
-  exe f.','.t.'w !psql '.$CONNINFO.'&>'.r|exe 'ped '.r
-endf
-" show cursor as vertical bar in insert mode
+
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
+nnoremap Y y$
+vnoremap < <gv
+vnoremap > >gv
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
+
+inoremap <space> <c-g>u<space>
+inoremap <cr> <c-g>u<cr>
+
+nnoremap <c-f> <cmd>Explore<cr>
+nnoremap <c-g> <c-^>
+nnoremap <c-h> <c-w>h
+nnoremap <c-j> <cmd>bprevious<cr>
+nnoremap <c-k> <cmd>bnext<cr>
+nnoremap <c-l> <c-w>l
+
+inoremap <c-l> <c-^>
+inoremap <c-c> <c-[>
+inoremap <c-d> <c-r>=toupper(strftime("%d/%m/%Y %a"))<cr>
+
+nnoremap <leader>q <cmd>call Psql()<cr><cr>
+nnoremap <leader>w <cmd>w<cr>
+nnoremap <leader>e <cmd>execute getline(line('.'))<cr>
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+y$
+nnoremap <leader>i :h <c-r>=expand("<cword>")<cr><cr>
+vnoremap <leader>p "_dp
+nnoremap <leader>s <cmd>%s/\s\+$//e<cr>
+vnoremap <leader>d "_d
+nnoremap <leader>d "_d
+nnoremap <leader>D "_d$
+nnoremap <leader>f mz<bar>:normal! 0i#<esc><bar>`z
+nnoremap <leader>v mzgqip`z
+nnoremap <leader><leader> <cmd>x<cr>
+nnoremap <leader><cr> <cmd>source $HOME/.vimrc<cr>
+
+autocmd bufwinleave *.* mkview
+autocmd bufwinenter *.* silent loadview
+
+colorscheme solarized
+syntax enable
+
+highlight statusline ctermbg=none ctermfg=darkgrey
+highlight spellbad cterm=underline
+
+call plug#begin('$HOME/.vim/plugged')
+  Plug 'vim-airline/vim-airline'
+  Plug 'tpope/vim-fugitive'
+  Plug 'jpalardy/vim-slime', { 'for': 'python' }
+  Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
+call plug#end()
+
+function! Psql() abort
+  let s:f = search(';$','bnW') + 1
+  let s:t = search(';$','cnW')
+  let s:r = $TMP.'/'.strftime('%Y%m%d%H%M%S')
+  execute s:f.','.s:t.'w !psql '.$CONNINFO.'&>'.s:r
+  execute 'pedit '.s:r
+endfunction
+
 if $TERM_PROGRAM =~ 'iTerm'
   let &t_SI = "\<esc>]50;CursorShape=1\x7"
   let &t_EI = "\<esc>]50;CursorShape=0\x7"
-en
+endif
 if exists('$TMUX')
   let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
   let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
-en
-" plug plug
-cal plug#begin('$HOME/.vim/plugged')
-  Plug 'vim-airline/vim-airline'
-  Plug 'tpope/vim-fugitive'
-cal plug#end()
+endif
