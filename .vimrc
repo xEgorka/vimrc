@@ -87,26 +87,25 @@ syntax enable
 highlight statusline ctermbg=none ctermfg=darkgrey
 highlight spellbad cterm=underline
 
-if $TERM_PROGRAM =~ 'iTerm'
-  let &t_SI = "\<esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<esc>]50;CursorShape=0\x7"
-endif
 if exists('$TMUX')
-  let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
-  let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
+    let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
+    let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
+else
+    let &t_SI = "\<esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<esc>]50;CursorShape=0\x7"
 endif
 
 call plug#begin('$HOME/.vim/plugged')
-  Plug 'vim-airline/vim-airline'
-  Plug 'tpope/vim-fugitive'
-  Plug 'jpalardy/vim-slime', { 'for': 'python' }
-  Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
+    Plug 'vim-airline/vim-airline'
+    Plug 'tpope/vim-fugitive'
+    Plug 'jpalardy/vim-slime', { 'for': 'python' }
+    Plug 'hanschen/vim-ipython-cell', { 'for': 'python' }
 call plug#end()
 
 function! Psql() abort
-  let s:f = search(';$','bnW') + 1
-  let s:t = search(';$','cnW')
-  let s:r = $TMP.'/'.strftime('%Y%m%d%H%M%S')
-  execute s:f.','.s:t.'w !psql '.$CONNINFO.'&>'.s:r
-  execute 'pedit '.s:r
+    let s:f = search(';$','bnW') + 1
+    let s:t = search(';$','cnW')
+    let s:r = $TMP.'/'.strftime('%Y%m%d%H%M%S')
+    execute s:f.','.s:t.'w !psql '.$CONNINFO.'&>'.s:r
+    execute 'pedit '.s:r
 endfunction
