@@ -1,5 +1,6 @@
 set autochdir
 set autoindent
+set background=dark
 set backspace=indent,eol,start
 set colorcolumn=80
 set expandtab
@@ -49,33 +50,33 @@ vnoremap K :m '<-2<cr>gv=gv
 inoremap <space> <c-g>u<space>
 inoremap <cr> <c-g>u<cr>
 
-nnoremap <c-f> <cmd>Explore<cr>
+nnoremap <c-f> :Explore<cr>
 nnoremap <c-g> <c-^>
 nnoremap <c-h> <c-w>h
-nnoremap <c-j> <cmd>bprevious<cr>
-nnoremap <c-k> <cmd>bnext<cr>
+nnoremap <c-j> :bprevious<cr>
+nnoremap <c-k> :bnext<cr>
 nnoremap <c-l> <c-w>l
 
-inoremap <c-l> <c-^>
+inoremap <c-@> <c-^>
 inoremap <c-c> <c-[>
-inoremap <c-d> <c-r>=toupper(strftime("%d/%m/%Y %a"))<cr>
+inoremap <c-d> <c-r>=toupper(strftime("%d/%m/%Y %a"))<cr><cr><cr>
 
-nnoremap <leader>q <cmd>call Psql()<cr><cr>
-nnoremap <leader>w <cmd>w<cr>
-nnoremap <leader>e <cmd>execute getline(line('.'))<cr>
+nnoremap <leader>q :call Psql()<cr><cr>
+nnoremap <leader>w :w<cr>
+nnoremap <leader>e :execute getline(line('.'))<cr>
 nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
 nnoremap <leader>i :h <c-r>=expand("<cword>")<cr><cr>
 vnoremap <leader>p "_dp
-nnoremap <leader>s <cmd>%s/\s\+$//e<cr>
+nnoremap <leader>s mz<bar>:%s/\s\+$//e<cr><bar>`z
 vnoremap <leader>d "_d
 nnoremap <leader>d "_d
 nnoremap <leader>D "_d$
 nnoremap <leader>f mz<bar>:normal! 0i#<esc><bar>`z
 nnoremap <leader>v mzgqip`z
-nnoremap <leader><leader> <cmd>x<cr>
-nnoremap <leader><cr> <cmd>source $HOME/.vimrc<cr>
+nnoremap <leader><leader> :x<cr>
+nnoremap <leader><cr> :source $HOME/.vimrc<cr>
 
 autocmd bufwinleave *.* mkview
 autocmd bufwinenter *.* silent loadview
@@ -85,6 +86,15 @@ syntax enable
 
 highlight statusline ctermbg=none ctermfg=darkgrey
 highlight spellbad cterm=underline
+
+if $TERM_PROGRAM =~ 'iTerm'
+  let &t_SI = "\<esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<esc>]50;CursorShape=0\x7"
+endif
+if exists('$TMUX')
+  let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
+  let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
+endif
 
 call plug#begin('$HOME/.vim/plugged')
   Plug 'vim-airline/vim-airline'
@@ -100,12 +110,3 @@ function! Psql() abort
   execute s:f.','.s:t.'w !psql '.$CONNINFO.'&>'.s:r
   execute 'pedit '.s:r
 endfunction
-
-if $TERM_PROGRAM =~ 'iTerm'
-  let &t_SI = "\<esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<esc>]50;CursorShape=0\x7"
-endif
-if exists('$TMUX')
-  let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
-  let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
-endif
