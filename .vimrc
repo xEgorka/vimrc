@@ -38,6 +38,8 @@ let g:netrw_altfile=1
 let g:netrw_banner=0
 let g:netrw_bufsettings="noma nomod nu nobl nowrap ro"
 let g:slime_cell_delimiter="##"
+let g:slime_default_config={"socket_name": "default", "target_pane": "1"}
+let g:slime_dont_ask_default=1
 let g:slime_python_ipython=1
 let g:slime_target="tmux"
 
@@ -50,16 +52,16 @@ vnoremap > >gv
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
 
-inoremap <space> <c-g>u<space>
-inoremap <cr> <c-g>u<cr>
-
 nnoremap <c-f> :Explore<cr>
 nnoremap <c-g> <c-^>
 nnoremap <c-h> <c-w>h
 nnoremap <c-j> :bprevious<cr>
 nnoremap <c-k> :bnext<cr>
 nnoremap <c-l> <c-w>l
+nnoremap <c-x> :bd<cr>
 
+inoremap <space> <c-g>u<space>
+inoremap <cr> <c-g>u<cr>
 inoremap <c-@> <c-^>
 inoremap <c-c> <c-[>
 inoremap <c-d> <c-r>=toupper(strftime("%d/%m/%Y %a"))<cr><cr><cr>
@@ -72,18 +74,18 @@ vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
 nnoremap <leader>i :h <c-r>=expand("<cword>")<cr><cr>
 vnoremap <leader>p "_dp
+nmap     <leader>a <plug>SlimeSendCell
 nnoremap <leader>s mz<bar>:%s/\s\+$//e<cr><bar>`z
 vnoremap <leader>d "_d
 nnoremap <leader>d "_d
 nnoremap <leader>D "_d$
 nnoremap <leader>f mz<bar>:normal! 0i#<esc><bar>`z
 nnoremap <leader>g mz<bar>:normal! 0x<esc><bar>`z
-nmap     <leader>z <Plug>SlimeSendCell
-nnoremap <leader>x :bd<cr>
 nnoremap <leader>v mzgqip`z
 nnoremap <leader><leader> :x<cr>
 nnoremap <leader><cr> :source $HOME/.vimrc<cr>
 
+filetype plugin on
 syntax enable
 colorscheme solarized
 
