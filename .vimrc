@@ -46,6 +46,7 @@ vnoremap < <gv
 vnoremap > >gv
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
+nnoremap <silent> Q <nop>
 
 inoremap <c-c> <c-[>
 inoremap <c-@> <c-^>
@@ -67,7 +68,6 @@ vnoremap <leader>y "+y
 nnoremap <leader>Y "+y$
 nnoremap <leader>o zo
 vnoremap <leader>p "_dp
-nnoremap <leader>s mz<bar>:%s/\s\+$//e<cr><bar>`z
 vnoremap <leader>d "_d
 nnoremap <leader>d "_d
 nnoremap <leader>D "_d$
@@ -81,5 +81,9 @@ colorscheme solarized
 highlight spellbad cterm=underline
 highlight statusline ctermbg=black ctermfg=darkgrey
 
-autocmd bufwinleave *.* mkview
-autocmd bufwinenter *.* silent loadview
+augroup vimrc
+    autocmd!
+    autocmd bufwinleave *.* mkview
+    autocmd bufwinenter *.* silent loadview
+    autocmd bufwritepre * %s/\s\+$//e
+augroup END
