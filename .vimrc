@@ -33,21 +33,21 @@ set undodir=$HOME/.vim/undodir
 set undofile
 set wildmenu
 
-nnoremap <c-f> :Ex<cr>
+nnoremap <c-f> :Explore<cr>
 nnoremap <c-h> <c-w>h
 nnoremap <c-j> :bp<cr>
 nnoremap <c-k> :bn<cr>
 nnoremap <c-l> <c-w>l
-inoremap <c-c> <c-[>
 nnoremap <c-@> i<c-^><esc>l
 inoremap <c-@> <c-^>
-inoremap <cr> <c-g>u<cr>
 inoremap <space> <c-g>u<space>
 
-nnoremap <bs><bs> <c-^>
-nnoremap <cr><cr> :x<cr>
-nnoremap <space><space> :up<cr>
+nnoremap <bs><space> <c-^>
+nnoremap <space><bs> <c-^>
 nnoremap <space><cr> :source $MYVIMRC<cr>
+nnoremap <cr><cr> :up<cr>
+nnoremap <bs><bs> :x<cr>
+nnoremap <space><space> :x<cr>
 
 nnoremap <space>w, yaw
 nnoremap <space>w. yaW
@@ -57,50 +57,55 @@ nnoremap <space>y "+y
 vnoremap <space>y "+y
 nnoremap <space>Y "+y$
 nnoremap <space>i i <esc>l
-nnoremap <space>o mzo<esc>`z
-nnoremap <space>O mzO<esc>`z
+nnoremap <space>o mmo<esc>`m
+nnoremap <space>O mmO<esc>`m
 vnoremap <space>p "_dp
 nnoremap <space>a a <esc>h
 nnoremap <space>d "_d
 vnoremap <space>d "_d
 nnoremap <space>D "_d$
 nnoremap <space>gg G
+nnoremap <space>gv `[v`]
+nnoremap <space>h zg
 nnoremap <space>j zRzz
 nnoremap <space>k zMzz
 nnoremap <space>l ]szz
 nnoremap <space>; :
 nnoremap <space>v vg_
-vnoremap <space>v $
+nnoremap <space>/ q/
 
 nnoremap Q @q
-nnoremap T mz^vg_"+y<esc>`z
-nnoremap Y yg_
-vnoremap Y y'>p
+nnoremap T mm^vg_"+y<esc>`m
+nnoremap Y y$
+vnoremap y mmy`mgv=gv
+vnoremap Y mmy'>P`mgv=gv
+nnoremap F q:
+nnoremap gJ mmgJ`m
 nnoremap H ^
-nnoremap J mzJ`z
+nnoremap J mmJ`m
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
-nnoremap L g_
+nnoremap L $
+vnoremap L $
 nnoremap v <c-v>
-nnoremap gV `[v`]
 nnoremap n nzzzv
 nnoremap N Nzzzv
 vnoremap < <gv
 vnoremap > >gv
 nnoremap / mf/
-nnoremap * mf*
+nnoremap * mf*N
 
+onoremap <space>gg G
 onoremap p i(
 onoremap b i[
 onoremap q i"
-onoremap <space>gg G
 
-nnoremap \sp mz^Pa<space><esc>`z
-nnoremap \dp mzj$v^ykA<space><esc>p`z
-nnoremap \fp mzk$v^yjA<space><esc>p`z
-nnoremap \gp mzA<space><esc>p`z
-nnoremap \cp mzj$v^ykPa<space><esc>`z
-nnoremap \vp mzk$v^yjPa<space><esc>`z
+nnoremap \sp mm^Pa<space><esc>`m
+nnoremap \dp mmj$v^ykA<space><esc>p`m
+nnoremap \fp mmk$v^yjA<space><esc>p`m
+nnoremap \gp mmA<space><esc>p`m
+nnoremap \cp mmj$v^ykPa<space><esc>`m
+nnoremap \vp mmk$v^yjPa<space><esc>`m
 
 syntax enable
 filetype plugin on
