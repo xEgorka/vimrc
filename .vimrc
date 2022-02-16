@@ -40,6 +40,7 @@ nnoremap <c-k> :bn<cr>
 nnoremap <c-l> <c-w>l
 nnoremap <c-@> i<c-^><esc>l
 inoremap <c-@> <c-^>
+nnoremap <tab> <c-w>p
 inoremap <space> <c-g>u<space>
 
 nnoremap <bs><space> <c-^>
@@ -57,8 +58,8 @@ nnoremap <space>y "+y
 vnoremap <space>y "+y
 nnoremap <space>Y "+y$
 nnoremap <space>i i <esc>l
-nnoremap <space>o mmo<esc>`m
-nnoremap <space>O mmO<esc>`m
+nnoremap <space>o m`o<esc>``
+nnoremap <space>O m`O<esc>``
 vnoremap <space>p "_dp
 nnoremap <space>a a <esc>h
 nnoremap <space>d "_d
@@ -66,31 +67,34 @@ vnoremap <space>d "_d
 nnoremap <space>D "_d$
 nnoremap <space>gg G
 nnoremap <space>gv `[v`]
-nnoremap <space>h zg
 nnoremap <space>j zRzz
 nnoremap <space>k zMzz
-nnoremap <space>l ]szz
 nnoremap <space>; :
+nnoremap <space>c "_c
+vnoremap <space>c "_c
+nnoremap <space>C "_C
 nnoremap <space>v vg_
 nnoremap <space>/ q/
 
 nnoremap Q @q
-nnoremap T mm^vg_"+y<esc>`m
+nnoremap T m`^vg_"+y<esc>``
 nnoremap Y y$
 vnoremap y ygv=gv
-vnoremap Y mmy'>P`mgv=gv
+vnoremap Y m`y'>P``gv=gv
 nnoremap F q:
-nnoremap gJ mmgJ`m
+nnoremap gJ m`gJ``
 nnoremap g<cr> <cr>
+nnoremap g/ :%s/
+xnoremap g/ :s/
 nnoremap H ^
-nnoremap J mmJ`m
+nnoremap J m`J``
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
 nnoremap L $
 vnoremap L $
 nnoremap v <c-v>
-nnoremap n nzzzv
-nnoremap N Nzzzv
+nnoremap n nzz
+nnoremap N Nzz
 vnoremap < <gv
 vnoremap > >gv
 nnoremap / mf/
@@ -101,12 +105,12 @@ onoremap p i(
 onoremap b i[
 onoremap q i"
 
-nnoremap \sp mm^Pa<space><esc>`m
-nnoremap \dp mmj$v^ykA<space><esc>p`m
-nnoremap \fp mmk$v^yjA<space><esc>p`m
-nnoremap \gp mmA<space><esc>p`m
-nnoremap \cp mmj$v^ykPa<space><esc>`m
-nnoremap \vp mmk$v^yjPa<space><esc>`m
+nnoremap \sp m`^Pa<space><esc>``
+nnoremap \dp m`j$v^ykA<space><esc>p``
+nnoremap \fp m`k$v^yjA<space><esc>p``
+nnoremap \gp m`A<space><esc>p``
+nnoremap \cp m`j$v^ykPa<space><esc>``
+nnoremap \vp m`k$v^yjPa<space><esc>``
 
 syntax enable
 filetype plugin on
