@@ -77,10 +77,11 @@ nnoremap <space>/ q/
 nnoremap Q @q
 nnoremap T mm^vg_"+y<esc>`m
 nnoremap Y y$
-vnoremap y mmy`mgv=gv
+vnoremap y ygv=gv
 vnoremap Y mmy'>P`mgv=gv
 nnoremap F q:
 nnoremap gJ mmgJ`m
+nnoremap g<cr> <cr>
 nnoremap H ^
 nnoremap J mmJ`m
 vnoremap J :m '>+1<cr>gv=gv
