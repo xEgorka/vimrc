@@ -38,8 +38,8 @@ nnoremap <c-h> <c-w>h
 nnoremap <c-j> :bp<cr>
 nnoremap <c-k> :bn<cr>
 nnoremap <c-l> <c-w>l
-nnoremap <c-@> i<c-^><esc>l
 inoremap <c-@> <c-^>
+nnoremap <c-@> i<c-^><esc>l
 nnoremap <tab> <c-w>p
 inoremap <space> <c-g>u<space>
 
@@ -66,6 +66,7 @@ nnoremap <space>d "_d
 xnoremap <space>d "_d
 nnoremap <space>D "_d$
 nnoremap <space>gg G
+xnoremap <space>gg G
 nnoremap <space>gv `[v`]
 nnoremap <space>j zRzz
 nnoremap <space>k zMzz
@@ -106,12 +107,28 @@ onoremap b i[
 onoremap q i"
 
 nnoremap \ph m`^Pa<space><esc>``
-nnoremap \pj m`j$v^ykA<space><esc>p``
-nnoremap \pk m`k$v^yjA<space><esc>p``
+nnoremap \pj m`j^vg_ykA<space><esc>p``
+nnoremap \pk m`k^vg_yjA<space><esc>p``
 nnoremap \pl m`A<space><esc>p``
-nnoremap \pn m`j$v^ykPa<space><esc>``
-nnoremap \pm m`k$v^yjPa<space><esc>``
+nnoremap \pn m`j^vg_kPa<space><esc>``
+nnoremap \pm m`k^vg_jPa<space><esc>``
 nnoremap \yy m`^vg_"+y<esc>``
+nnoremap \df i(<cr><esc>>>o<bs>)<esc>k^
+
+augroup vimrc
+    autocmd!
+    autocmd bufwinleave *.* mkview
+    autocmd bufwinenter *.* loadview
+    autocmd BufWritePre * :call StripTrailingWhitespaces()
+augroup END
+
+function! StripTrailingWhitespaces()
+    normal! m`
+    let s:search=@/
+    %s/\s\+$//e
+    let @/=s:search
+    normal! ``
+endfunction
 
 syntax enable
 filetype plugin on
@@ -120,9 +137,15 @@ colorscheme solarized
 highlight spellbad cterm=underline
 highlight statusline ctermbg=black ctermfg=darkgrey
 
-augroup vimrc
-    autocmd!
-    autocmd bufwinleave *.* mkview
-    autocmd bufwinenter *.* loadview
-    autocmd BufWritePre * :call StripTrailingWhitespaces()
-augroup END
+let &scrolloff=777
+let g:netrw_altfile=1
+let g:netrw_banner=0
+let g:netrw_bufsettings="noma nomod nu nobl nowrap ro"
+
+if exists('$TMUX')
+    let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
+    let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
+else
+    let &t_SI = "\<esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<esc>]50;CursorShape=0\x7"
+endif
