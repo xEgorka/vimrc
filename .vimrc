@@ -55,15 +55,15 @@ nnoremap <space>w. yaW
 nnoremap <space>e, yiw
 nnoremap <space>e. yiW
 nnoremap <space>y "+y
-vnoremap <space>y "+y
+xnoremap <space>y "+y
 nnoremap <space>Y "+y$
 nnoremap <space>i i <esc>l
 nnoremap <space>o m`o<esc>``
 nnoremap <space>O m`O<esc>``
-vnoremap <space>p "_dp
+xnoremap <space>p "_dp
 nnoremap <space>a a <esc>h
 nnoremap <space>d "_d
-vnoremap <space>d "_d
+xnoremap <space>d "_d
 nnoremap <space>D "_d$
 nnoremap <space>gg G
 nnoremap <space>gv `[v`]
@@ -71,16 +71,16 @@ nnoremap <space>j zRzz
 nnoremap <space>k zMzz
 nnoremap <space>; :
 nnoremap <space>c "_c
-vnoremap <space>c "_c
+xnoremap <space>c "_c
 nnoremap <space>C "_C
 nnoremap <space>v vg_
 nnoremap <space>/ q/
 
-nnoremap Q @q
-nnoremap T m`^vg_"+y<esc>``
+nnoremap Q :copen<cr>
+nnoremap T @:
 nnoremap Y y$
-vnoremap y ygv=gv
-vnoremap Y m`y'>P``gv=gv
+xnoremap y ygv=gv
+xnoremap Y m`y'>P``gv=gv
 nnoremap F q:
 nnoremap gJ m`gJ``
 nnoremap g<cr> <cr>
@@ -88,15 +88,15 @@ nnoremap g/ :%s/
 xnoremap g/ :s/
 nnoremap H ^
 nnoremap J m`J``
-vnoremap J :m '>+1<cr>gv=gv
-vnoremap K :m '<-2<cr>gv=gv
+xnoremap J :m '>+1<cr>gv=gv
+xnoremap K :m '<-2<cr>gv=gv
 nnoremap L $
-vnoremap L $
+xnoremap L $
 nnoremap v <c-v>
 nnoremap n nzz
 nnoremap N Nzz
-vnoremap < <gv
-vnoremap > >gv
+xnoremap < <gv
+xnoremap > >gv
 nnoremap / mf/
 nnoremap * mf*N
 
@@ -105,12 +105,13 @@ onoremap p i(
 onoremap b i[
 onoremap q i"
 
-nnoremap \sp m`^Pa<space><esc>``
-nnoremap \dp m`j$v^ykA<space><esc>p``
-nnoremap \fp m`k$v^yjA<space><esc>p``
-nnoremap \gp m`A<space><esc>p``
-nnoremap \cp m`j$v^ykPa<space><esc>``
-nnoremap \vp m`k$v^yjPa<space><esc>``
+nnoremap \ph m`^Pa<space><esc>``
+nnoremap \pj m`j$v^ykA<space><esc>p``
+nnoremap \pk m`k$v^yjA<space><esc>p``
+nnoremap \pl m`A<space><esc>p``
+nnoremap \pn m`j$v^ykPa<space><esc>``
+nnoremap \pm m`k$v^yjPa<space><esc>``
+nnoremap \yy m`^vg_"+y<esc>``
 
 syntax enable
 filetype plugin on
