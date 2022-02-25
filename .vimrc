@@ -4,6 +4,7 @@ set background=dark
 set backspace=indent,eol,start
 set colorcolumn=80
 set cursorline
+set cursorcolumn
 set expandtab
 set formatoptions+=t
 set hidden
@@ -33,67 +34,67 @@ set undodir=$HOME/.vim/undodir
 set undofile
 set wildmenu
 
-nnoremap <c-f> :Explore<cr>
-nnoremap <c-h> <c-w>h
-nnoremap <c-j> :bp<cr>
-nnoremap <c-k> :bn<cr>
-nnoremap <c-l> <c-w>l
-inoremap <c-@> <c-^>
-nnoremap <c-@> i<c-^><esc>l
-nnoremap <tab> <c-w>p
-inoremap <space> <c-g>u<space>
+nnoremap <C-q> :bd<CR>
+nnoremap <expr> <C-d> repeat("0j", &scroll)
+nnoremap <expr> <C-u> repeat("0k", &scroll)
+nnoremap <C-f> :Explore<CR>
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> :bp<CR>
+nnoremap <C-k> :bn<CR>
+nnoremap <C-l> <C-w>l
+inoremap <C-@> <C-^>
+nnoremap <C-@> i<C-^><Esc>l
+nnoremap <Tab> <C-w>p
+inoremap <Space> <C-g>u<Space>
 
-nnoremap <bs><space> <c-^>
-nnoremap <space><bs> <c-^>
-nnoremap <space><cr> :source $MYVIMRC<cr>
-nnoremap <cr><cr> :up<cr>
-nnoremap <bs><bs> :x<cr>
-nnoremap <space><space> :x<cr>
+nnoremap <BS><Space> <C-^>
+nnoremap <Space><BS> <C-^>
+nnoremap <Space><CR> :source $MYVIMRC<CR>
+nnoremap <CR><CR> :up<CR>
+nnoremap <BS><BS> :x<CR>
+nnoremap <Space><Space> :x<CR>
 
-nnoremap <space>w, yaw
-nnoremap <space>w. yaW
-nnoremap <space>e, yiw
-nnoremap <space>e. yiW
-nnoremap <space>y "+y
-xnoremap <space>y "+y
-nnoremap <space>Y "+y$
-nnoremap <space>i i <esc>l
-nnoremap <space>o m`o<esc>``
-nnoremap <space>O m`O<esc>``
-xnoremap <space>p "_dp
-nnoremap <space>a a <esc>h
-nnoremap <space>d "_d
-xnoremap <space>d "_d
-nnoremap <space>D "_d$
-nnoremap <space>gg G
-xnoremap <space>gg G
-nnoremap <space>gv `[v`]
-nnoremap <space>j zRzz
-nnoremap <space>k zMzz
-nnoremap <space>; :
-nnoremap <space>c "_c
-xnoremap <space>c "_c
-nnoremap <space>C "_C
-nnoremap <space>v vg_
-nnoremap <space>/ q/
+nnoremap <Space>y "+y
+xnoremap <Space>y "+y
+nnoremap <Space>Y "+y$
+nnoremap <Space>i i <Esc>l
+nnoremap <Space>o m`o<Esc>``
+nnoremap <Space>O m`O<Esc>``
+xnoremap <Space>p "_dp
+nnoremap <Space>a a <Esc>h
+nnoremap <Space>d "_d
+xnoremap <Space>d "_d
+nnoremap <Space>D "_d$
+nnoremap <Space>gg G
+xnoremap <Space>gg G
+onoremap <Space>gg G
+nnoremap <Space>gv `[v`]
+nnoremap <Space>j zRzz
+nnoremap <Space>k zMzz
+nnoremap <Space>; :
+nnoremap <Space>c "_c
+xnoremap <Space>c "_c
+nnoremap <Space>C "_C
+nnoremap <Space>v vg_
+nnoremap <Space>, a,<Esc>
+nnoremap <Space>/ q/
 
-nnoremap Q :copen<cr>
+nnoremap Q :copen<CR>
 nnoremap T @:
 nnoremap Y y$
-xnoremap y ygv=gv
-xnoremap Y m`y'>P``gv=gv
+xnoremap Y m`y'>p``gv=gv
 nnoremap F q:
 nnoremap gJ m`gJ``
-nnoremap g<cr> <cr>
+nnoremap g<CR> <CR>
 nnoremap g/ :%s/
 xnoremap g/ :s/
 nnoremap H ^
 nnoremap J m`J``
-xnoremap J :m '>+1<cr>gv=gv
-xnoremap K :m '<-2<cr>gv=gv
+xnoremap J :m '>+1<CR>gv=gv
+xnoremap K :m '<-2<CR>gv=gv
 nnoremap L $
 xnoremap L $
-nnoremap v <c-v>
+xnoremap v <C-v>
 nnoremap n nzz
 nnoremap N Nzz
 xnoremap < <gv
@@ -101,24 +102,20 @@ xnoremap > >gv
 nnoremap / mf/
 nnoremap * mf*N
 
-onoremap <space>gg G
-onoremap p i(
-onoremap b i[
-onoremap q i"
+xnoremap il g_o^
+onoremap il :<C-u>normal vil<CR>
+xnoremap al $o0
+onoremap al :<C-u>normal val<CR>
 
-nnoremap \ph m`^Pa<space><esc>``
-nnoremap \pj m`j^vg_ykA<space><esc>p``
-nnoremap \pk m`k^vg_yjA<space><esc>p``
-nnoremap \pl m`A<space><esc>p``
-nnoremap \pn m`j^vg_kPa<space><esc>``
-nnoremap \pm m`k^vg_jPa<space><esc>``
-nnoremap \yy m`^vg_"+y<esc>``
-nnoremap \df i(<cr><esc>>>o<bs>)<esc>k^
+xnoremap i% :<C-u>let z = @/\|1;/^./kz<CR>G??<CR>:let @/ = z<CR>V'z
+onoremap i% :<C-u>normal vi%<CR>
+xnoremap a% GoggV
+onoremap a% :<C-u>normal va%<CR>
 
 augroup vimrc
     autocmd!
-    autocmd bufwinleave *.* mkview
-    autocmd bufwinenter *.* loadview
+    autocmd BufWinLeave *.* mkview
+    autocmd BufWinEnter *.* loadview
     autocmd BufWritePre * :call StripTrailingWhitespaces()
 augroup END
 
@@ -143,9 +140,9 @@ let g:netrw_banner=0
 let g:netrw_bufsettings="noma nomod nu nobl nowrap ro"
 
 if exists('$TMUX')
-    let &t_SI = "\<esc>Ptmux;\<esc>\<esc>]50;CursorShape=1\x7\<esc>\\"
-    let &t_EI = "\<esc>Ptmux;\<esc>\e[2 q\<esc>\\"
+    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+    let &t_EI = "\<Esc>Ptmux;\<Esc>\e[2 q\<Esc>\\"
 else
-    let &t_SI = "\<esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<esc>]50;CursorShape=0\x7"
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
