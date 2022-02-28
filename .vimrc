@@ -7,6 +7,7 @@ set cursorline
 set cursorcolumn
 set expandtab
 set formatoptions+=t
+set grepprg=ag\ --vimgrep
 set hidden
 set history=10000
 set keymap=russian-jcukenwin
@@ -32,11 +33,11 @@ set timeoutlen=1000
 set ttimeoutlen=10
 set undodir=$HOME/.vim/undodir
 set undofile
+set wildcharm=<C-z>
 set wildmenu
 
-nnoremap <C-q> :bd<CR>
-nnoremap <expr> <C-d> repeat("0j", &scroll)
-nnoremap <expr> <C-u> repeat("0k", &scroll)
+nnoremap <C-u> :call SmoothScroll('k')<CR>
+nnoremap <C-d> :call SmoothScroll('j')<CR>
 nnoremap <C-f> :Explore<CR>
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> :bp<CR>
@@ -68,7 +69,6 @@ nnoremap <Space>D "_d$
 nnoremap <Space>gg G
 xnoremap <Space>gg G
 onoremap <Space>gg G
-nnoremap <Space>gv `[v`]
 nnoremap <Space>j zRzz
 nnoremap <Space>k zMzz
 nnoremap <Space>; :
@@ -84,6 +84,7 @@ nnoremap T @:
 nnoremap Y y$
 xnoremap Y m`y'>p``gv=gv
 nnoremap F q:
+nnoremap gQ :lopen<CR>
 nnoremap gJ m`gJ``
 nnoremap g<CR> <CR>
 nnoremap g/ :%s/
@@ -95,8 +96,8 @@ xnoremap K :m '<-2<CR>gv=gv
 nnoremap L $
 xnoremap L $
 xnoremap v <C-v>
-nnoremap n nzz
-nnoremap N Nzz
+nnoremap n nzzzv
+nnoremap N Nzzzv
 xnoremap < <gv
 xnoremap > >gv
 nnoremap / mf/
@@ -104,28 +105,75 @@ nnoremap * mf*N
 
 xnoremap il g_o^
 onoremap il :<C-u>normal vil<CR>
-xnoremap al $o0
-onoremap al :<C-u>normal val<CR>
-
-xnoremap i% :<C-u>let z = @/\|1;/^./kz<CR>G??<CR>:let @/ = z<CR>V'z
-onoremap i% :<C-u>normal vi%<CR>
 xnoremap a% GoggV
 onoremap a% :<C-u>normal va%<CR>
+xnoremap ik `]o`[
+onoremap ik :<C-u>normal vik<CR>
+xnoremap in :<C-u>call VisualNumber()<CR>
+onoremap in :<C-u>normal vin<CR>
+xnoremap ir i[
+onoremap ir :<C-u>execute 'normal v' . v:count1 . 'i['<CR>
+xnoremap ar a[
+onoremap ar :<C-u>execute 'normal v' . v:count1 . 'a['<CR>
 
-augroup vimrc
-    autocmd!
-    autocmd BufWinLeave *.* mkview
-    autocmd BufWinEnter *.* loadview
-    autocmd BufWritePre * :call StripTrailingWhitespaces()
+cnoremap <expr> <Tab>   getcmdtype() =~ "[/?]" ? "<C-g>" : "<C-z>"
+cnoremap <expr> <S-Tab> getcmdtype() =~ "[/?]" ? "<C-t>" : "<S-Tab>"
+
+set errorformat^=%f:%l:%c\ %m
+command! -bang -nargs=1 Global lgetexpr filter(
+            \ map(getline(1,'$'), { key, val -> expand("%")
+            \ . ":" . (key + 1) . ":1 " . (len(val) > 0 ? val : '  ') }),
+            \ { idx, val -> expand('<bang>') == '!' ?
+            \ val !~ '^.\{-}:1 \zs.*' . <q-args> . '.*' :
+            \ val =~ '^.\{-}:1 \zs.*' . <q-args> . '.*' })
+
+function! Grep(...)
+	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+endfunction
+
+command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
+command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
+
+cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
+cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
+
+augroup quickfix
+	autocmd!
+	autocmd QuickFixCmdPost cgetexpr cwindow
+	autocmd QuickFixCmdPost lgetexpr lwindow
 augroup END
 
-function! StripTrailingWhitespaces()
-    normal! m`
-    let s:search=@/
-    %s/\s\+$//e
-    let @/=s:search
-    normal! ``
+function! SmoothScroll(direction)
+        let counter = 1
+        while counter < &scroll
+                execute "normal " . a:direction
+                redraw
+                sleep 2m
+                let counter+=1
+        endwhile
 endfunction
+
+function! VisualNumber()
+        call search('\d\([^0-9\.]\|$\)', 'cW')
+        normal v
+        call search('\(^\|[^0-9\.]\d\)', 'becW')
+endfunction
+
+function! StripTrailingWhitespaces()
+        let cur = getcurpos()
+        :%substitute/\s\+$//e
+        call histdel("/", -1)
+        call cursor(cur[1], cur[2])
+endfunction
+
+augroup vimrc
+        autocmd!
+        autocmd BufWinLeave *.* mkview
+        autocmd BufWinEnter *.* loadview
+        autocmd BufWritePre * :call StripTrailingWhitespaces()
+        autocmd CmdlineEnter /,\? :set hlsearch
+        autocmd CmdlineLeave /,\? :set nohlsearch
+augroup END
 
 syntax enable
 filetype plugin on
