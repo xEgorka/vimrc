@@ -7,7 +7,6 @@ set cursorline
 set cursorcolumn
 set expandtab
 set formatoptions+=t
-set grepprg=ag\ --vimgrep
 set hidden
 set history=10000
 set keymap=russian-jcukenwin
@@ -71,6 +70,7 @@ xnoremap <Space>gg G
 onoremap <Space>gg G
 nnoremap <Space>j zRzz
 nnoremap <Space>k zMzz
+nnoremap <Space>l :cn<CR>
 nnoremap <Space>; :
 nnoremap <Space>c "_c
 xnoremap <Space>c "_c
@@ -116,8 +116,20 @@ onoremap ir :<C-u>execute 'normal v' . v:count1 . 'i['<CR>
 xnoremap ar a[
 onoremap ar :<C-u>execute 'normal v' . v:count1 . 'a['<CR>
 
+function! VisualNumber()
+    call search('\d\([^0-9\.]\|$\)', 'cW')
+    normal v
+    call search('\(^\|[^0-9\.]\d\)', 'becW')
+endfunction
+
 cnoremap <expr> <Tab>   getcmdtype() =~ "[/?]" ? "<C-g>" : "<C-z>"
 cnoremap <expr> <S-Tab> getcmdtype() =~ "[/?]" ? "<C-t>" : "<S-Tab>"
+
+augroup highlightsearch
+        autocmd!
+        autocmd CmdlineEnter /,\? set hlsearch
+        autocmd CmdlineLeave /,\? set nohlsearch
+augroup END
 
 set errorformat^=%f:%l:%c\ %m
 command! -bang -nargs=1 Global lgetexpr filter(
@@ -127,6 +139,9 @@ command! -bang -nargs=1 Global lgetexpr filter(
             \ val !~ '^.\{-}:1 \zs.*' . <q-args> . '.*' :
             \ val =~ '^.\{-}:1 \zs.*' . <q-args> . '.*' })
 
+if executable('ag')
+    set grepprg=ag\ --vimgrep
+endif
 function! Grep(...)
 	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
 endfunction
@@ -134,46 +149,40 @@ endfunction
 command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
 command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
 
-cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
-cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
+cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')
+            \ ? 'Grep'  : 'grep'
+cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep')
+            \ ? 'LGrep' : 'lgrep'
 
 augroup quickfix
-	autocmd!
-	autocmd QuickFixCmdPost cgetexpr cwindow
-	autocmd QuickFixCmdPost lgetexpr lwindow
+        autocmd!
+        autocmd QuickFixCmdPost cgetexpr cwindow
+        autocmd QuickFixCmdPost lgetexpr lwindow
 augroup END
-
-function! SmoothScroll(direction)
-        let counter = 1
-        while counter < &scroll
-                execute "normal " . a:direction
-                redraw
-                sleep 2m
-                let counter+=1
-        endwhile
-endfunction
-
-function! VisualNumber()
-        call search('\d\([^0-9\.]\|$\)', 'cW')
-        normal v
-        call search('\(^\|[^0-9\.]\d\)', 'becW')
-endfunction
-
-function! StripTrailingWhitespaces()
-        let cur = getcurpos()
-        :%substitute/\s\+$//e
-        call histdel("/", -1)
-        call cursor(cur[1], cur[2])
-endfunction
 
 augroup vimrc
         autocmd!
         autocmd BufWinLeave *.* mkview
         autocmd BufWinEnter *.* loadview
-        autocmd BufWritePre * :call StripTrailingWhitespaces()
-        autocmd CmdlineEnter /,\? :set hlsearch
-        autocmd CmdlineLeave /,\? :set nohlsearch
+        autocmd BufWritePre *.* call StripTrailingWhitespaces()
 augroup END
+
+function! StripTrailingWhitespaces()
+    let cur = getcurpos()
+    %substitute/\s\+$//e
+    call histdel("/", -1)
+    call cursor(cur[1], cur[2])
+endfunction
+
+function! SmoothScroll(direction)
+    let counter = 1
+    while counter < &scroll
+        execute "normal " . a:direction
+        redraw
+        sleep 2m
+        let counter+=1
+    endwhile
+endfunction
 
 syntax enable
 filetype plugin on
