@@ -111,8 +111,8 @@ xnoremap in :<C-u>call VisualNumber()<CR>
 onoremap in :<C-u>normal vin<CR>
 xnoremap ir i[
 onoremap ir :<C-u>execute 'normal v' . v:count1 . 'i['<CR>
-xnoremap ii :<c-u>call VisualIndentation()<cr>
-onoremap ii :<c-u>call VisualIndentation()<cr>
+xnoremap ii :<C-u>call VisualIndentation()<CR>
+onoremap ii :<C-u>normal vii<CR>
 
 function! VisualNumber()
     call search('\d\([^0-9\.]\|$\)', 'cW')
@@ -121,15 +121,15 @@ function! VisualNumber()
 endfunction
 
 function! VisualIndentation()
-	normal! ^
- 	let indent = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
-	let begin = search('^\(\s*\%'.indent.'v\|^$\)\@!', 'bWn') + 1
-	let end = search('^\(\s*\%'.indent.'v\|^$\)\@!', 'Wn') - 1
-	execute 'normal! '.begin.'G0'
-	call search('^[^\n\r]', 'Wc')
-	execute 'normal! Vo'.end.'G'
-	call search('^[^\n\r]', 'bWc')
- 	normal! $o
+    normal! ^
+    let indent = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
+    let begin = search('^\(\s*\%'.indent.'v\|^$\)\@!', 'bWn') + 1
+    let end = search('^\(\s*\%'.indent.'v\|^$\)\@!', 'Wn') - 1
+    execute 'normal! '.begin.'G0'
+    call search('^[^\n\r]', 'Wc')
+    execute 'normal! Vo'.end.'G'
+    call search('^[^\n\r]', 'bWc')
+    normal! $o
 endfunction
 
 cnoremap <expr> <Tab>   getcmdtype() =~ "[/?]" ? "<C-g>" : "<C-z>"
@@ -174,7 +174,7 @@ augroup vimrc
         autocmd!
         autocmd BufWinLeave *.* mkview
         autocmd BufWinEnter *.* loadview
-        autocmd BufWritePre *.* call StripTrailingWhitespaces()
+"         autocmd BufWritePre *.* call StripTrailingWhitespaces()
         autocmd BufWinEnter *.txt set background=light
 augroup END
 
