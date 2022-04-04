@@ -14,6 +14,7 @@ set iminsert=0
 set imsearch=0
 set incsearch
 set laststatus=2
+set lazyredraw
 set listchars=space:·,tab:>·,trail:~,eol:¬
 set noswapfile
 set nowrap
@@ -47,13 +48,12 @@ nnoremap <C-@> i<C-^><Esc>l
 nnoremap <Tab> <C-w>p
 inoremap <Space> <C-g>u<Space>
 
-nnoremap <BS><Space> <C-^>
+nnoremap <BS><BS> :up<CR>
 nnoremap <Space><BS> <C-^>
 nnoremap <Space><CR> :source $MYVIMRC<CR>
-nnoremap <CR><CR> :up<CR>
-nnoremap <BS><BS> :x<CR>
-nnoremap <Space><Space> :x<CR>
 
+nnoremap <Space>3 :execute "Grep " . expand('<cword>')<CR>
+nnoremap <Space>8 :execute "Global " . expand('<cword>')<CR>
 nnoremap <Space>y "+y
 xnoremap <Space>y "+y
 nnoremap <Space>Y "+y$
@@ -79,14 +79,11 @@ nnoremap <Space>v vg_
 nnoremap <Space>, a,<Esc>
 nnoremap <Space>/ q/
 
-nnoremap Q :copen<CR>
 nnoremap T @:
 nnoremap Y y$
 xnoremap Y m`y'>p``gv=gv
 nnoremap F q:
-nnoremap gQ :lopen<CR>
 nnoremap gJ m`gJ``
-nnoremap g<CR> <CR>
 nnoremap g/ :%s/
 xnoremap g/ :s/
 nnoremap H ^
@@ -95,6 +92,7 @@ xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 nnoremap L $
 xnoremap L $
+nnoremap zz :x<CR>
 xnoremap v <C-v>
 nnoremap n nzzzv
 nnoremap N Nzzzv
@@ -105,21 +103,33 @@ nnoremap * mf*N
 
 xnoremap il g_o^
 onoremap il :<C-u>normal vil<CR>
-xnoremap a% GoggV
-onoremap a% :<C-u>normal va%<CR>
+xnoremap i% GoggV
+onoremap i% :<C-u>normal vi%<CR>
 xnoremap ik `]o`[
 onoremap ik :<C-u>normal vik<CR>
 xnoremap in :<C-u>call VisualNumber()<CR>
 onoremap in :<C-u>normal vin<CR>
 xnoremap ir i[
 onoremap ir :<C-u>execute 'normal v' . v:count1 . 'i['<CR>
-xnoremap ar a[
-onoremap ar :<C-u>execute 'normal v' . v:count1 . 'a['<CR>
+xnoremap ii :<c-u>call VisualIndentation()<cr>
+onoremap ii :<c-u>call VisualIndentation()<cr>
 
 function! VisualNumber()
     call search('\d\([^0-9\.]\|$\)', 'cW')
     normal v
     call search('\(^\|[^0-9\.]\d\)', 'becW')
+endfunction
+
+function! VisualIndentation()
+	normal! ^
+ 	let indent = virtcol(getline('.') =~# '^\s*$' ? '$' : '.')
+	let begin = search('^\(\s*\%'.indent.'v\|^$\)\@!', 'bWn') + 1
+	let end = search('^\(\s*\%'.indent.'v\|^$\)\@!', 'Wn') - 1
+	execute 'normal! '.begin.'G0'
+	call search('^[^\n\r]', 'Wc')
+	execute 'normal! Vo'.end.'G'
+	call search('^[^\n\r]', 'bWc')
+ 	normal! $o
 endfunction
 
 cnoremap <expr> <Tab>   getcmdtype() =~ "[/?]" ? "<C-g>" : "<C-z>"
@@ -165,6 +175,7 @@ augroup vimrc
         autocmd BufWinLeave *.* mkview
         autocmd BufWinEnter *.* loadview
         autocmd BufWritePre *.* call StripTrailingWhitespaces()
+        autocmd BufWinEnter *.txt set background=light
 augroup END
 
 function! StripTrailingWhitespaces()
