@@ -1,24 +1,32 @@
-set autochdir
 set autoindent
 set background=dark
-set backspace=indent,eol,start
+set backspace+=eol
+set backspace+=indent
+set backspace+=start
 set colorcolumn=80
 set cursorline
 set cursorcolumn
+set errorformat^=%f:%l:%c\ %m
 set expandtab
 set formatoptions+=t
+set grepprg=rg\ --vimgrep
 set hidden
-set history=10000
+set history=100
 set keymap=russian-jcukenwin
 set iminsert=0
 set imsearch=0
 set incsearch
 set laststatus=2
 set lazyredraw
-set listchars=space:·,tab:>·,trail:~,eol:¬
+set listchars+=tab:>-
+set listchars+=trail:~
+set listchars+=nbsp:+
+set nojoinspaces
+set nomodeline
 set noswapfile
 set nowrap
 set number
+set path=$PWD
 set previewheight=16
 set relativenumber
 set shiftwidth=4
@@ -26,6 +34,8 @@ set shortmess+=I
 set showcmd
 set softtabstop=4
 set spelllang=en,ru
+set splitbelow
+set splitright
 set statusline=%F\ %m%r%h%w%q%k%=%v\ %L
 set tabstop=4
 set timeout
@@ -35,25 +45,49 @@ set undodir=$HOME/.vim/undodir
 set undofile
 set wildcharm=<C-z>
 set wildmenu
-
+"------------------------------------------------------------------------------
 nnoremap <C-u> :call SmoothScroll('k')<CR>
 nnoremap <C-d> :call SmoothScroll('j')<CR>
-nnoremap <C-f> :Explore<CR>
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> :bp<CR>
-nnoremap <C-k> :bn<CR>
-nnoremap <C-l> <C-w>l
+nnoremap <C-e> :Explore<CR>
+nnoremap <C-y> :find **/*<C-z><S-Tab>
+nnoremap <C-f> :call Fzf()<CR>
+nnoremap <C-h> :cprevious<CR>
+nnoremap <C-j> :bprevious<CR>
+nnoremap <C-k> :bnext<CR>
+nnoremap <C-l> :cnext<CR>
 inoremap <C-@> <C-^>
 nnoremap <C-@> i<C-^><Esc>l
 nnoremap <Tab> <C-w>p
-inoremap <Space> <C-g>u<Space>
+nnoremap <BS> :update<CR>
+nnoremap [z zMzz
+nnoremap ]z zRzz
 
-nnoremap <BS><BS> :up<CR>
+function! SmoothScroll(direction)
+    let counter = 1
+    while counter < &scroll
+        execute "normal " . a:direction
+        redraw
+        sleep 2m
+        let counter+=1
+    endwhile
+endfunction
+
+function! Fzf()
+    let tmpfile = tempname()
+    execute 'silent !fzf --multi | awk ''{ print $1":1:0" }'' > '.tmpfile
+    execute 'lfile '.tmpfile
+    redraw!
+endfunction
+"------------------------------------------------------------------------------
+nnoremap <Space> <Nop>
+inoremap <Space> <C-g>u<Space>
 nnoremap <Space><BS> <C-^>
 nnoremap <Space><CR> :source $MYVIMRC<CR>
-
-nnoremap <Space>3 :execute "Grep " . expand('<cword>')<CR>
-nnoremap <Space>8 :execute "Global " . expand('<cword>')<CR>
+nnoremap <Space>@ ^"xyg_@x
+nnoremap <Space>: ^"xyg_:<C-r>x<CR>
+nnoremap <Space>! ^"xyg_:!<C-r>x<CR>
+nnoremap <Space>* :execute "Global " . expand('<cword>')<CR>
+nnoremap <Space>8 :execute "Grep " . expand('<cword>')<CR>
 nnoremap <Space>y "+y
 xnoremap <Space>y "+y
 nnoremap <Space>Y "+y$
@@ -62,45 +96,71 @@ nnoremap <Space>o m`o<Esc>``
 nnoremap <Space>O m`O<Esc>``
 xnoremap <Space>p "_dp
 nnoremap <Space>a a <Esc>h
+nnoremap <Space>s :<C-u>call StripTrailingWhitespaces()<CR>
 nnoremap <Space>d "_d
 xnoremap <Space>d "_d
 nnoremap <Space>D "_d$
 nnoremap <Space>gg G
 xnoremap <Space>gg G
 onoremap <Space>gg G
-nnoremap <Space>j zRzz
-nnoremap <Space>k zMzz
-nnoremap <Space>l :cn<CR>
-nnoremap <Space>; :
+nnoremap <Space>x :exit<CR>
 nnoremap <Space>c "_c
 xnoremap <Space>c "_c
 nnoremap <Space>C "_C
-nnoremap <Space>v vg_
 nnoremap <Space>, a,<Esc>
-nnoremap <Space>/ q/
 
-nnoremap T @:
+function! StripTrailingWhitespaces()
+    let cur = getcurpos()
+    %substitute/\s\+$//e
+    call histdel("/", -1)
+    call cursor(cur[1], cur[2])
+endfunction
+
+command! -bang -nargs=1 Global lgetexpr filter(
+            \ map(getline(1,'$'), { key, val -> expand("%")
+            \ . ":" . (key + 1) . ":1 " . (len(val) > 0 ? val : '  ') }),
+            \ { idx, val -> expand('<bang>') == '!' ?
+            \ val !~ '^.\{-}:1 \zs.*' . <q-args> . '.*' :
+            \ val =~ '^.\{-}:1 \zs.*' . <q-args> . '.*' })
+
+function! Grep(...)
+	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+endfunction
+
+command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
+
+cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')
+            \ ? 'Grep'  : 'grep'
+
+augroup quickfix
+        autocmd!
+        autocmd QuickFixCmdPost cgetexpr cwindow 15
+        autocmd QuickFixCmdPost cgetexpr set norelativenumber
+augroup END
+"------------------------------------------------------------------------------
+nnoremap * *N
 nnoremap Y y$
 xnoremap Y m`y'>p``gv=gv
-nnoremap F q:
-nnoremap gJ m`gJ``
-nnoremap g/ :%s/
-xnoremap g/ :s/
 nnoremap H ^
 nnoremap J m`J``
 xnoremap J :m '>+1<CR>gv=gv
 xnoremap K :m '<-2<CR>gv=gv
 nnoremap L $
 xnoremap L $
-nnoremap zz :x<CR>
 xnoremap v <C-v>
 nnoremap n nzzzv
 nnoremap N Nzzzv
 xnoremap < <gv
 xnoremap > >gv
-nnoremap / mf/
-nnoremap * mf*N
+cnoremap <expr> <Tab>   getcmdtype() =~ "[/?]" ? "<C-g>" : "<C-z>"
+cnoremap <expr> <S-Tab> getcmdtype() =~ "[/?]" ? "<C-t>" : "<S-Tab>"
 
+augroup highlightsearch
+        autocmd!
+        autocmd CmdlineEnter /,\? set hlsearch
+        autocmd CmdlineLeave /,\? set nohlsearch
+augroup END
+"------------------------------------------------------------------------------
 xnoremap il g_o^
 onoremap il :<C-u>normal vil<CR>
 xnoremap i% GoggV
@@ -131,69 +191,12 @@ function! VisualIndentation()
     call search('^[^\n\r]', 'bWc')
     normal! $o
 endfunction
-
-cnoremap <expr> <Tab>   getcmdtype() =~ "[/?]" ? "<C-g>" : "<C-z>"
-cnoremap <expr> <S-Tab> getcmdtype() =~ "[/?]" ? "<C-t>" : "<S-Tab>"
-
-augroup highlightsearch
-        autocmd!
-        autocmd CmdlineEnter /,\? set hlsearch
-        autocmd CmdlineLeave /,\? set nohlsearch
-augroup END
-
-set errorformat^=%f:%l:%c\ %m
-command! -bang -nargs=1 Global lgetexpr filter(
-            \ map(getline(1,'$'), { key, val -> expand("%")
-            \ . ":" . (key + 1) . ":1 " . (len(val) > 0 ? val : '  ') }),
-            \ { idx, val -> expand('<bang>') == '!' ?
-            \ val !~ '^.\{-}:1 \zs.*' . <q-args> . '.*' :
-            \ val =~ '^.\{-}:1 \zs.*' . <q-args> . '.*' })
-
-if executable('ag')
-    set grepprg=ag\ --vimgrep
-endif
-function! Grep(...)
-	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
-endfunction
-
-command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
-command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
-
-cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')
-            \ ? 'Grep'  : 'grep'
-cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep')
-            \ ? 'LGrep' : 'lgrep'
-
-augroup quickfix
-        autocmd!
-        autocmd QuickFixCmdPost cgetexpr cwindow
-        autocmd QuickFixCmdPost lgetexpr lwindow
-augroup END
-
+"------------------------------------------------------------------------------
 augroup vimrc
         autocmd!
         autocmd BufWinLeave *.* mkview
         autocmd BufWinEnter *.* loadview
-"         autocmd BufWritePre *.* call StripTrailingWhitespaces()
-        autocmd BufWinEnter *.txt set background=light
 augroup END
-
-function! StripTrailingWhitespaces()
-    let cur = getcurpos()
-    %substitute/\s\+$//e
-    call histdel("/", -1)
-    call cursor(cur[1], cur[2])
-endfunction
-
-function! SmoothScroll(direction)
-    let counter = 1
-    while counter < &scroll
-        execute "normal " . a:direction
-        redraw
-        sleep 2m
-        let counter+=1
-    endwhile
-endfunction
 
 syntax enable
 filetype plugin on
