@@ -58,9 +58,6 @@ nnoremap <C-l> :cnext<CR>
 inoremap <C-@> <C-^>
 nnoremap <C-@> i<C-^><Esc>l
 nnoremap <Tab> <C-w>p
-nnoremap <BS> :update<CR>
-nnoremap [z zMzz
-nnoremap ]z zRzz
 
 function! SmoothScroll(direction)
     let counter = 1
@@ -83,11 +80,10 @@ nnoremap <Space> <Nop>
 inoremap <Space> <C-g>u<Space>
 nnoremap <Space><BS> <C-^>
 nnoremap <Space><CR> :source $MYVIMRC<CR>
-nnoremap <Space>@ ^"xyg_@x
-nnoremap <Space>: ^"xyg_:<C-r>x<CR>
-nnoremap <Space>! ^"xyg_:!<C-r>x<CR>
-nnoremap <Space>* :execute "Global " . expand('<cword>')<CR>
-nnoremap <Space>8 :execute "Grep " . expand('<cword>')<CR>
+nnoremap <Space>!<CR> ^"xyg_:!<C-r>x<CR>
+nnoremap <Space>@<CR> ^"xyg_@x
+nnoremap <Space>:<CR> ^"xyg_:<C-r>x<CR>
+nnoremap <Space>* :execute "Grep ".expand('<cword>')<CR>
 nnoremap <Space>w :update<CR>
 nnoremap <Space>y "+y
 xnoremap <Space>y "+y
@@ -113,13 +109,6 @@ function! StripTrailingWhitespaces()
     call histdel("/", -1)
     call cursor(cur[1], cur[2])
 endfunction
-
-command! -bang -nargs=1 Global lgetexpr filter(
-            \ map(getline(1,'$'), { key, val -> expand("%")
-            \ . ":" . (key + 1) . ":1 " . (len(val) > 0 ? val : '  ') }),
-            \ { idx, val -> expand('<bang>') == '!' ?
-            \ val !~ '^.\{-}:1 \zs.*' . <q-args> . '.*' :
-            \ val =~ '^.\{-}:1 \zs.*' . <q-args> . '.*' })
 
 function! Grep(...)
 	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
@@ -200,9 +189,9 @@ endfunction
 
 augroup vimrc
         autocmd!
+        autocmd BufEnter *.* call SetCurrentWorkingDirectory()
         autocmd BufWinLeave *.* mkview
         autocmd BufWinEnter *.* loadview
-        autocmd BufEnter *.* call SetCurrentWorkingDirectory()
 augroup END
 
 syntax enable
