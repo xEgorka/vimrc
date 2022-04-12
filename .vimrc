@@ -88,6 +88,7 @@ nnoremap <Space>: ^"xyg_:<C-r>x<CR>
 nnoremap <Space>! ^"xyg_:!<C-r>x<CR>
 nnoremap <Space>* :execute "Global " . expand('<cword>')<CR>
 nnoremap <Space>8 :execute "Grep " . expand('<cword>')<CR>
+nnoremap <Space>w :update<CR>
 nnoremap <Space>y "+y
 xnoremap <Space>y "+y
 nnoremap <Space>Y "+y$
@@ -96,13 +97,10 @@ nnoremap <Space>o m`o<Esc>``
 nnoremap <Space>O m`O<Esc>``
 xnoremap <Space>p "_dp
 nnoremap <Space>a a <Esc>h
-nnoremap <Space>s :<C-u>call StripTrailingWhitespaces()<CR>
+nnoremap <Space>s :call StripTrailingWhitespaces()<CR>
 nnoremap <Space>d "_d
 xnoremap <Space>d "_d
 nnoremap <Space>D "_d$
-nnoremap <Space>gg G
-xnoremap <Space>gg G
-onoremap <Space>gg G
 nnoremap <Space>x :exit<CR>
 nnoremap <Space>c "_c
 xnoremap <Space>c "_c
@@ -127,10 +125,10 @@ function! Grep(...)
 	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
 endfunction
 
-command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
+command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
 
-cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')
-            \ ? 'Grep'  : 'grep'
+cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep')
+            \ ? 'Grep' : 'grep'
 
 augroup quickfix
         autocmd!
@@ -192,10 +190,19 @@ function! VisualIndentation()
     normal! $o
 endfunction
 "------------------------------------------------------------------------------
+function! SetCurrentWorkingDirectory()
+    lcd %:p:h
+    try
+        lcd `=system('git rev-parse --show-toplevel')`
+    catch 
+    endtry
+endfunction
+
 augroup vimrc
         autocmd!
         autocmd BufWinLeave *.* mkview
         autocmd BufWinEnter *.* loadview
+        autocmd BufEnter *.* call SetCurrentWorkingDirectory()
 augroup END
 
 syntax enable
