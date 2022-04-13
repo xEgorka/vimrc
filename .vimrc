@@ -88,20 +88,13 @@ nnoremap <Space>w :update<CR>
 nnoremap <Space>y "+y
 xnoremap <Space>y "+y
 nnoremap <Space>Y "+y$
-nnoremap <Space>i i <Esc>l
 nnoremap <Space>o m`o<Esc>``
 nnoremap <Space>O m`O<Esc>``
-xnoremap <Space>p "_dp
 nnoremap <Space>a a <Esc>h
 nnoremap <Space>s :call StripTrailingWhitespaces()<CR>
 nnoremap <Space>d "_d
 xnoremap <Space>d "_d
-nnoremap <Space>D "_d$
 nnoremap <Space>x :exit<CR>
-nnoremap <Space>c "_c
-xnoremap <Space>c "_c
-nnoremap <Space>C "_C
-nnoremap <Space>, a,<Esc>
 
 function! StripTrailingWhitespaces()
     let cur = getcurpos()
@@ -111,7 +104,7 @@ function! StripTrailingWhitespaces()
 endfunction
 
 function! Grep(...)
-	return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+	return system(join([&grepprg.' -i'] + [expandcmd(join(a:000, ' '))], ' '))
 endfunction
 
 command! -nargs=+ -complete=file_in_path -bar Grep cgetexpr Grep(<f-args>)
@@ -127,7 +120,6 @@ augroup END
 "------------------------------------------------------------------------------
 nnoremap * *N
 nnoremap Y y$
-xnoremap Y m`y'>p``gv=gv
 nnoremap H ^
 nnoremap J m`J``
 xnoremap J :m '>+1<CR>gv=gv
@@ -148,16 +140,14 @@ augroup highlightsearch
         autocmd CmdlineLeave /,\? set nohlsearch
 augroup END
 "------------------------------------------------------------------------------
-xnoremap il g_o^
-onoremap il :<C-u>normal vil<CR>
 xnoremap i% GoggV
 onoremap i% :<C-u>normal vi%<CR>
+xnoremap il g_o^
+onoremap il :<C-u>normal vil<CR>
 xnoremap ik `]o`[
 onoremap ik :<C-u>normal vik<CR>
 xnoremap in :<C-u>call VisualNumber()<CR>
 onoremap in :<C-u>normal vin<CR>
-xnoremap ir i[
-onoremap ir :<C-u>execute 'normal v' . v:count1 . 'i['<CR>
 xnoremap ii :<C-u>call VisualIndentation()<CR>
 onoremap ii :<C-u>normal vii<CR>
 
@@ -183,7 +173,7 @@ function! SetCurrentWorkingDirectory()
     lcd %:p:h
     try
         lcd `=system('git rev-parse --show-toplevel')`
-    catch 
+    catch
     endtry
 endfunction
 
