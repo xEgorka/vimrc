@@ -9,7 +9,9 @@ set cursorcolumn
 set errorformat^=%f:%l:%c\ %m
 set expandtab
 set formatoptions+=t
-set grepprg=rg\ --vimgrep
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+endif
 set hidden
 set history=100
 set keymap=russian-jcukenwin
@@ -62,7 +64,7 @@ nnoremap <Tab> <C-w>p
 function! SmoothScroll(direction)
     let counter = 1
     while counter < &scroll
-        execute "normal " . a:direction
+        execute "normal ".a:direction
         redraw
         sleep 2m
         let counter+=1
@@ -186,7 +188,10 @@ augroup END
 
 syntax enable
 filetype plugin on
-colorscheme solarized
+try
+    colorscheme solarized
+catch
+endtry
 
 highlight spellbad cterm=underline
 highlight statusline ctermbg=black ctermfg=darkgrey
